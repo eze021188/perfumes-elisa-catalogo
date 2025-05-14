@@ -275,7 +275,7 @@ export default function CatalogPage() {
     if (error) return <div className="text-center p-8 text-red-600">Error: {error.message}</div>;
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-100"> {/* Contenedor raíz */}
+        <div className="flex flex-col min-h-screen bg-gray-100">
              <header className="fixed top-0 left-0 right-0 bg-white shadow z-20">
                  <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
                      <button className="lg:hidden p-2 text-gray-800 rounded-md hover:bg-gray-100" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label="Toggle menu">
@@ -284,7 +284,7 @@ export default function CatalogPage() {
                      <SearchBar onSearch={setSearchTerm} />
                      <img src="/imagen/PERFUMESELISAwhite.jpg" alt="Perfumes Elisa Logo" className="h-12 object-contain hidden lg:block" />
                      <div className="flex items-center space-x-4">
-                          <div className="hidden md:flex"> {/* Wrapper para filtros de categoría en desktop */}
+                          <div className="hidden md:flex">
                             <CategoryFilters categories={categorias} selected={selectedCat} onSelect={setSelectedCat} />
                           </div>
                           <ViewToggle view={viewMode} onChange={setViewMode} />
@@ -293,9 +293,17 @@ export default function CatalogPage() {
                  </div>
              </header>
 
-            <main className="pt-16 flex flex-1"> {/* main es flex-1 para empujar el footer hacia abajo */}
-                {/* La sidebar ya tiene lg:static que la hace estática en el flujo en desktop */}
-                <aside className={`fixed lg:static inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white shadow-lg lg:shadow-none z-40 overflow-y-auto px-6 pb-6 pt-16 lg:p-6`}>
+            <main className="pt-16 flex flex-1">
+                {/* SIDEBAR MODIFICADA PARA SER FIJA EN DESKTOP */}
+                <aside className={`
+                    fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+                    transition-transform duration-300 ease-in-out 
+                    w-64 bg-white shadow-lg 
+                    z-40 overflow-y-auto 
+                    px-6 pb-6 pt-16 
+                    lg:fixed lg:left-0 lg:top-16 lg:h-[calc(100vh-4rem)] 
+                    lg:translate-x-0 lg:shadow-none lg:p-6
+                `}>
                      <div className="mb-8 text-center lg:hidden">
                          <img src="/imagen/PERFUMESELISAwhite.jpg" alt="Logo Perfumes Elisa" className="mx-auto h-16 w-auto" />
                      </div>
@@ -327,8 +335,9 @@ export default function CatalogPage() {
                              <p>Retirar en domicilio.</p>
                          </div>
                     </div>
+                    {/* Botón cerrar sidebar móvil, se quitó mt-16 innecesario */}
                     {isSidebarOpen && (
-                        <button className="lg:hidden absolute top-4 right-4 p-2 bg-gray-200 text-gray-800 rounded-md mt-16" onClick={() => setIsSidebarOpen(false)} aria-label="Cerrar menú">
+                        <button className="lg:hidden absolute top-4 right-4 p-2 bg-gray-200 text-gray-800 rounded-md" onClick={() => setIsSidebarOpen(false)} aria-label="Cerrar menú">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     )}
@@ -408,7 +417,6 @@ export default function CatalogPage() {
                 </section>
             </main>
 
-            {/* Overlay para modals y sidebar móvil */}
             {(isSidebarOpen || isCartOpen || isProductDetailModalOpen) && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-30" 
                      onClick={() => { 
@@ -420,7 +428,6 @@ export default function CatalogPage() {
                 </div>
             )}
 
-            {/* Modal del Carrito */}
             {isCartOpen && ( 
                 <div className="fixed inset-0 z-40 flex items-center justify-center p-4"  aria-labelledby="cart-modal-title" role="dialog" aria-modal="true">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
@@ -455,7 +462,6 @@ export default function CatalogPage() {
                 </div>
             )}
 
-            {/* Modal de Detalle de Producto */}
             {isProductDetailModalOpen && selectedProductDetail && (
                 <ProductDetailModal 
                     product={selectedProductDetail} 
@@ -465,24 +471,23 @@ export default function CatalogPage() {
                 />
             )}
 
-            {/* NUEVO: Pie de Página */}
-            <footer className="bg-white text-center p-4 sm:p-6 border-t border-gray-200 mt-auto"> {/* mt-auto para asegurar que esté al final si el contenido es corto */}
+            <footer className="bg-white text-center p-4 sm:p-6 border-t border-gray-200">
                 <div className="max-w-3xl mx-auto">
                     <p className="text-xs text-gray-500 leading-relaxed">
-                        Derechos de Reproducción © 2006-{new Date().getFullYear()} PerfumesElisa.com {/* Considera reemplazar "PerfumesElisa.com" si tienes otro nombre de dominio o marca */} – Todos los derechos reservados.
+                        Derechos de Reproducción © 2006-{new Date().getFullYear()} PerfumesElisa.com {/* Reemplaza con tu nombre de dominio/marca si es diferente */} – Todos los derechos reservados.
                         <br />
                         No se permite copiar nada sin autorización previa por escrito.
-                        <br className="sm:hidden" /> {/* Salto de línea solo en móviles para mejor lectura */}
+                        <br className="sm:hidden" />
                         Favor de leer los&nbsp;
-                        {/* Deberás crear estas páginas y enlazar correctamente */}
+                        {/* Asegúrate de crear estas páginas y enlazar correctamente */}
                         <a href="/terminos-servicio" className="underline hover:text-gray-700">Términos del Servicio</a> y la&nbsp;
                         <a href="/politica-privacidad" className="underline hover:text-gray-700">Política de Privacidad</a>.
                         <br />
-                        Perfumes Elisa {/* Reemplaza con tu nombre legal/comercial si es diferente */}, Apodaca, N.L., México.
+                        Perfumes Elisa {/* Reemplaza con tu nombre comercial/legal si es diferente */}, Apodaca, N.L., México.
                     </p>
                 </div>
             </footer>
 
-        </div> // Cierre del div raíz
+        </div>
     );
 }
