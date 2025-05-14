@@ -13,7 +13,7 @@ const FacebookIcon = () => (
 const InstagramIcon = () => (
     <img src="/imagen/iconos/instagram-bn.jpg" alt="Instagram" className="h-5 w-5 mr-1.5" />
 );
-const EmailIcon = () => ( // Nuevo ícono de correo
+const EmailIcon = () => (
     <img src="/imagen/iconos/email-bn.jpg" alt="Correo Electrónico" className="h-4 w-4 mr-1.5" />
 );
 const LocationIcon = () => (
@@ -83,13 +83,17 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-labelledby="product-detail-modal-title" role="dialog" aria-modal="true">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                {/* Cabecera de la Modal */}
                 <div className="flex justify-between items-center p-4 sm:p-5 border-b border-gray-200">
                     <h3 id="product-detail-modal-title" className="text-lg sm:text-xl font-semibold text-gray-900">{product.nombre}</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1" aria-label="Cerrar detalle de producto">
                         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
+
+                {/* Cuerpo de la Modal */}
                 <div className="p-4 sm:p-6 overflow-y-auto grid sm:grid-cols-2 gap-4 sm:gap-6">
+                    {/* Sección de Imagen */}
                     <div className="sm:order-1">
                         <img 
                             src={product.imagenUrl || 'https://placehold.co/600x600?text=No+Image'} 
@@ -98,7 +102,10 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                             onError={e => { e.target.src = 'https://placehold.co/600x600?text=No+Image'; e.target.onerror = null; }}
                         />
                     </div>
+
+                    {/* Sección de Detalles */}
                     <div className="sm:order-2 flex flex-col">
+                        {/* Precio */}
                         <div className="mb-3">
                             {product.promocion !== null && product.promocion < product.precio ? (
                                 <>
@@ -109,16 +116,30 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                                 <p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio)}</p>
                             )}
                         </div>
+                        {/* Categoría */}
                         <div className="mb-3 text-sm text-gray-600">
                             <span className="font-medium text-gray-700">Categoría:</span> {product.categoria || 'No especificada'}
                         </div>
+                        {/* Disponibles */}
                         <div className="mb-4 text-sm text-gray-600">
                             <span className="font-medium text-gray-700">Disponibles:</span> {product.stock}
                         </div>
-                        <h4 className="font-semibold text-gray-800 mb-1 mt-2 text-md">Descripción:</h4>
-                        <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap flex-grow min-h-[60px]">
-                            {product.descripcion || "No hay descripción detallada para este producto."}
-                        </p>
+
+                        {/* === MODIFICACIÓN AQUÍ para DESCRIPCIÓN HTML === */}
+                        <h4 className="font-semibold text-gray-800 mb-1 mt-2 text-md">Descripción Detallada:</h4>
+                        {product.descripcion_html ? (
+                            <div 
+                                className="prose prose-sm max-w-none text-gray-700 mb-4 flex-grow min-h-[60px]" // Clases para estilizar HTML, 'prose' es de Tailwind Typography
+                                dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
+                            />
+                        ) : (
+                            <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap flex-grow min-h-[60px]">
+                                {product.descripcion || "No hay descripción detallada para este producto."}
+                            </p>
+                        )}
+                        {/* === FIN DE LA MODIFICACIÓN === */}
+                        
+                        {/* Botón Añadir al Carrito */}
                         <div className="mt-auto">
                             <button
                                 onClick={() => onAddToCart(product)}
@@ -154,6 +175,8 @@ export default function CatalogPage() {
     useEffect(() => {
         async function fetchProducts() {
             setLoading(true);
+            // Asegúrate de que tu tabla 'productos' en Supabase tenga la columna 'descripcion_html'
+            // y que el select('*') la esté trayendo.
             const { data, error } = await supabase.from('productos').select('*');
             if (error) {
                 console.error('Error fetching products:', error); setError(error); toast.error('Error al cargar los productos.');
@@ -170,7 +193,15 @@ export default function CatalogPage() {
                      const stockNumerico = parseFloat(p.stock) || 0;
                      const precioNumerico = parseFloat(p.precio) || 0;
                      const promocionNumerica = parseFloat(p.promocion);
-                     return { ...p, imagenUrl, stock: stockNumerico, precio: precioNumerico, promocion: isNaN(promocionNumerica) ? null : promocionNumerica };
+                     // No es necesario modificar nada aquí si 'descripcion_html' ya viene en 'p'
+                     return { 
+                        ...p, 
+                        imagenUrl, 
+                        stock: stockNumerico, 
+                        precio: precioNumerico, 
+                        promocion: isNaN(promocionNumerica) ? null : promocionNumerica 
+                        // descripcion_html: p.descripcion_html (ya está incluido por el ...p)
+                    };
                 });
                 setProductos(productsWithPublicUrls); setFiltered(productsWithPublicUrls);
             }
@@ -184,7 +215,12 @@ export default function CatalogPage() {
         if (selectedCat && selectedCat !== 'INICIO') { temp = temp.filter(p => p.categoria === selectedCat); }
         if (searchTerm) {
             const lowerCaseSearchTerm = searchTerm.toLowerCase();
-            temp = temp.filter(p => p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)));
+            temp = temp.filter(p => 
+                p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || 
+                (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                // Opcional: también buscar en la descripción HTML si lo deseas
+                (p.descripcion_html && p.descripcion_html.toLowerCase().includes(lowerCaseSearchTerm))
+            );
         }
         setFiltered(temp);
     }, [searchTerm, selectedCat, productos]);
