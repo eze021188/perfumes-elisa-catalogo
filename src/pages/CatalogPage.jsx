@@ -270,7 +270,7 @@ export default function CatalogPage() {
             <main className="pt-16 flex flex-1">
                 <aside className={`fixed lg:static inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white shadow-lg lg:shadow-none z-40 overflow-y-auto px-6 pb-6 pt-16 lg:p-6`}>
                      <div className="mb-8 text-center lg:hidden">
-                         <img src="/imagen/PERFUMESELISA.jpg" alt="Logo Perfumes Elisa" className="mx-auto h-16 w-auto" />
+                         <img src="/imagen/PERFUMESELISAwhite.jpg" alt="Logo Perfumes Elisa" className="mx-auto h-16 w-auto" />
                      </div>
                     <div className="mb-6 border-b border-gray-200 pb-4">
                         <h3 className="font-semibold text-gray-800 mb-2 text-sm">ENTRA EN CONTACTO</h3>
