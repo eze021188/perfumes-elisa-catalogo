@@ -72,7 +72,7 @@ function CartButton({ count, onClick }) {
 
 const formatCurrency = (amount) => {
      const numericAmount = parseFloat(amount);
-     if (isNaN(numericAmount)) return '$0.00';
+     if (isNaN(numericAmount)) return '$0'; // Ajustado para que el fallback sea más genérico si no hay dígitos
      return numericAmount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 };
 
@@ -107,13 +107,14 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                     <div className="sm:order-2 flex flex-col">
                         {/* Precio */}
                         <div className="mb-3">
-                            {product.promocion !== null && product.promocion < product.precio ? (
+                            {/* CORREGIDO: Usar product.precio_normal y corregir typo */}
+                            {product.promocion !== null && product.promocion < product.precio_normal ? (
                                 <>
-                                    <span className="text-gray-400 line-through text-md sm:text-lg">{formatCurrency(product.precio)}</span>
+                                    <span className="text-gray-400 line-through text-md sm:text-lg">{formatCurrency(product.precio_normal)}</span>
                                     <span className="text-green-600 font-bold text-xl sm:text-2xl ml-2">{formatCurrency(product.promocion)}</span>
                                 </>
                             ) : (
-                                <p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio)}</p>
+                                <p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio_normal)}</p>
                             )}
                         </div>
                         {/* Categoría */}
@@ -125,11 +126,11 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                             <span className="font-medium text-gray-700">Disponibles:</span> {product.stock}
                         </div>
 
-                        {/* === MODIFICACIÓN AQUÍ para DESCRIPCIÓN HTML === */}
+                        {/* Descripción Detallada (HTML) o Descripción Simple */}
                         <h4 className="font-semibold text-gray-800 mb-1 mt-2 text-md">Descripción Detallada:</h4>
                         {product.descripcion_html ? (
                             <div 
-                                className="prose prose-sm max-w-none text-gray-700 mb-4 flex-grow min-h-[60px]" // Clases para estilizar HTML, 'prose' es de Tailwind Typography
+                                className="prose prose-sm max-w-none text-gray-700 mb-4 flex-grow min-h-[60px]"
                                 dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
                             />
                         ) : (
@@ -137,7 +138,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                                 {product.descripcion || "No hay descripción detallada para este producto."}
                             </p>
                         )}
-                        {/* === FIN DE LA MODIFICACIÓN === */}
                         
                         {/* Botón Añadir al Carrito */}
                         <div className="mt-auto">
@@ -175,13 +175,11 @@ export default function CatalogPage() {
     useEffect(() => {
         async function fetchProducts() {
             setLoading(true);
-            // Asegúrate de que tu tabla 'productos' en Supabase tenga la columna 'descripcion_html'
-            // y que el select('*') la esté trayendo.
             const { data, error } = await supabase.from('productos').select('*');
             if (error) {
                 console.error('Error fetching products:', error); setError(error); toast.error('Error al cargar los productos.');
             } else {
-                const productsWithPublicUrls = data.map(p => {
+                const productsWithCorrectData = data.map(p => { // Renombrado para claridad
                     let imagenUrl = '';
                     if (p.imagen && supabase.storage) {
                          const { data: publicUrlData } = supabase.storage.from('productos').getPublicUrl(p.imagen);
@@ -190,20 +188,22 @@ export default function CatalogPage() {
                     if (!imagenUrl || imagenUrl.includes('null')) {
                         imagenUrl = 'https://placehold.co/400x400?text=No+Image';
                     }
-                     const stockNumerico = parseFloat(p.stock) || 0;
-                     const precioNumerico = parseFloat(p.precio) || 0;
+
+                     const precioNormalNumerico = parseFloat(p.precio_normal) || 0;
                      const promocionNumerica = parseFloat(p.promocion);
-                     // No es necesario modificar nada aquí si 'descripcion_html' ya viene en 'p'
+                     
                      return { 
                         ...p, 
                         imagenUrl, 
-                        stock: stockNumerico, 
-                        precio: precioNumerico, 
-                        promocion: isNaN(promocionNumerica) ? null : promocionNumerica 
-                        // descripcion_html: p.descripcion_html (ya está incluido por el ...p)
-                    };
+                        stock: parseFloat(p.stock) || 0, 
+                        precio_normal: precioNormalNumerico, 
+                        promocion: isNaN(promocionNumerica) ? null : promocionNumerica,
+                        // descripcion_html ya viene con ...p si existe en la base de datos
+                        // descripcion (simple) también ya viene con ...p
+                     };
                 });
-                setProductos(productsWithPublicUrls); setFiltered(productsWithPublicUrls);
+                setProductos(productsWithCorrectData); 
+                setFiltered(productsWithCorrectData);
             }
             setLoading(false);
         }
@@ -218,7 +218,6 @@ export default function CatalogPage() {
             temp = temp.filter(p => 
                 p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || 
                 (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)) ||
-                // Opcional: también buscar en la descripción HTML si lo deseas
                 (p.descripcion_html && p.descripcion_html.toLowerCase().includes(lowerCaseSearchTerm))
             );
         }
@@ -251,18 +250,27 @@ export default function CatalogPage() {
             return prev.filter(item => item.id !== productId);
         });
     };
+
+    // CORREGIDO: Usar precio_normal como el precio original para el cálculo de descuento
     const calculateDiscountPercentage = (originalPrice, salePrice) => {
-        const original = parseFloat(originalPrice); const sale = parseFloat(salePrice);
-        if (isNaN(original) || isNaN(sale) || original <= 0 || sale >= original) return null;
-        return Math.round(((original - sale) / original) * 100);
+        const original = parseFloat(originalPrice); 
+        const sale = parseFloat(salePrice);
+        if (isNaN(original) || isNaN(sale) || original <= 0 || sale >= original || sale === null) {
+             return null;
+        }
+        const percentage = ((original - sale) / original) * 100;
+        return Math.round(percentage);
     };
+
     const handleWhatsAppRequest = () => {
         if (cartItems.length === 0) { toast.error("El carrito está vacío."); return; }
         const phoneNumber = '528130804010';
         let message = "¡Hola! Me gustaría solicitar los siguientes productos:\n\n";
         cartItems.forEach(item => {
-            const itemPrice = formatCurrency(item.promocion !== null ? item.promocion : item.precio);
-            message += `- ${item.qty}x ${item.nombre} - ${itemPrice}\n`;
+            // CORREGIDO: Usar precio_normal y promocion para determinar el precio final
+            const finalPrice = (item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal;
+            const itemPriceString = formatCurrency(finalPrice);
+            message += `- ${item.qty}x ${item.nombre} - ${itemPriceString}\n`;
         });
         message += "\nPor favor, confirmar disponibilidad y detalles de entrega/recogida.";
         const encodedMessage = encodeURIComponent(message);
@@ -348,7 +356,10 @@ export default function CatalogPage() {
                     {filtered.length === 0 && !loading && !error ? (<p className="text-center text-gray-500 mt-8">No se encontraron productos que coincidan con tu búsqueda o filtro.</p>) : 
                     viewMode === 'grid' ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 md:gap-8">
-                            {filtered.map(p => { const disc = calculateDiscountPercentage(p.precio, p.promocion); return (
+                            {filtered.map(p => { 
+                                // CORREGIDO: Usar p.precio_normal para calcular el descuento
+                                const disc = calculateDiscountPercentage(p.precio_normal, p.promocion); 
+                                return (
                                 <div key={p.id} onClick={() => handleProductClick(p)} className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200">
                                     {disc != null && (<span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">-{disc}%</span>)}
                                     <div className="w-full h-64 overflow-hidden bg-gray-100">
@@ -357,9 +368,15 @@ export default function CatalogPage() {
                                     </div>
                                     <div className="p-4 flex flex-col flex-grow">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{p.nombre}</h3>
-                                        {p.promocion !== null && p.promocion < p.precio ? (
-                                        <div className="flex items-baseline space-x-2 mb-2"><span className="text-gray-500 line-through text-sm">{formatCurrency(p.precio)}</span><span className="text-green-600 font-bold text-lg">{formatCurrency(p.promocion)}</span></div>) : 
-                                        (<p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio)}</p>)}
+                                        {/* CORREGIDO: Usar p.precio_normal */}
+                                        {p.promocion !== null && p.promocion < p.precio_normal ? (
+                                        <div className="flex items-baseline space-x-2 mb-2">
+                                            <span className="text-gray-500 line-through text-sm">{formatCurrency(p.precio_normal)}</span>
+                                            <span className="text-green-600 font-bold text-lg">{formatCurrency(p.promocion)}</span>
+                                        </div>
+                                        ) : (
+                                        <p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio_normal)}</p>
+                                        )}
                                         <p className="text-sm text-gray-600">Stock: <span className="font-medium">{p.stock}</span></p>
                                         <div className="flex justify-end mt-auto pt-2">
                                             <button onClick={(e) => { e.stopPropagation(); addToCart(p);}} disabled={p.stock <= 0} className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 transition-colors text-xs" title="Agregar al carrito" aria-label={`Agregar ${p.nombre} al carrito`}>+</button>
@@ -376,7 +393,17 @@ export default function CatalogPage() {
                                         <img src={p.imagenUrl || 'https://placehold.co/80x80?text=No+Image'} alt={p.nombre} className="w-20 h-20 object-cover rounded flex-shrink-0" onError={e => { e.target.src = 'https://placehold.co/80x80?text=No+Image'; e.target.onerror = null; }} />
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-semibold text-gray-900 truncate">{p.nombre}</h4>
-                                            <div className="mt-1">{p.promocion !== null && p.promocion < p.precio ? (<><span className="text-green-600 font-bold">{formatCurrency(p.promocion)}</span><span className="text-gray-400 line-through ml-2 text-sm">{formatCurrency(p.precio)}</span></>) : (<span className="font-bold text-gray-700">{formatCurrency(p.precio)}</span>)}</div>
+                                            {/* CORREGIDO: Usar p.precio_normal */}
+                                            <div className="mt-1">
+                                                {p.promocion !== null && p.promocion < p.precio_normal ? (
+                                                <>
+                                                    <span className="text-green-600 font-bold">{formatCurrency(p.promocion)}</span>
+                                                    <span className="text-gray-400 line-through ml-2 text-sm">{formatCurrency(p.precio_normal)}</span>
+                                                </>
+                                                ) : (
+                                                <span className="font-bold text-gray-700">{formatCurrency(p.precio_normal)}</span>
+                                                )}
+                                            </div>
                                             <p className="text-sm text-gray-600 mt-1">Stock: <span className="font-medium">{p.stock}</span></p>
                                         </div>
                                     </div>
@@ -407,7 +434,13 @@ export default function CatalogPage() {
                                 <li key={item.id} className="flex items-center justify-between py-4">
                                     <div className="flex items-center space-x-3">
                                         <img src={item.imagenUrl || 'https://placehold.co/60x60?text=No+Image'} alt={item.nombre} className="w-16 h-16 object-cover rounded border border-gray-200" onError={e => { e.target.src = 'https://placehold.co/60x60?text=No+Image'; e.target.onerror = null; }} />
-                                        <div className="flex-1"><p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p><p className="text-gray-600 text-sm">{formatCurrency(item.promocion !== null ? item.promocion : item.precio)}</p></div>
+                                        <div className="flex-1">
+                                            <p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p>
+                                            {/* CORREGIDO: Usar precio_normal y promocion para determinar el precio final */}
+                                            <p className="text-gray-600 text-sm">
+                                                {formatCurrency((item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal)}
+                                            </p>
+                                        </div>
                                     </div>
                                     <div className="flex items-center space-x-2 ml-3">
                                         <button onClick={() => decrementItem(item.id)} className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-30" disabled={item.qty <= 1} title="Disminuir cantidad" aria-label={`Disminuir cantidad de ${item.nombre}`}><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" /></svg></button>
