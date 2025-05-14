@@ -5,22 +5,22 @@ import toast from 'react-hot-toast';
 
 // --- Íconos PNG ---
 const WhatsAppIcon = () => (
-    <img src="/imagen/iconos/whatsapp-bn.png" alt="WhatsApp" className="h-5 w-5 mr-1.5" />
+    <img src="/imagen/iconos/whatsapp-bn.jpg" alt="WhatsApp" className="h-5 w-5 mr-1.5" />
 );
 const FacebookIcon = () => (
-    <img src="/imagen/iconos/facebook-bn.png" alt="Facebook" className="h-5 w-5 mr-1.5" />
+    <img src="/imagen/iconos/facebook-bn.jpg" alt="Facebook" className="h-5 w-5 mr-1.5" />
 );
 const InstagramIcon = () => (
-    <img src="/imagen/iconos/instagram-bn.png" alt="Instagram" className="h-5 w-5 mr-1.5" />
+    <img src="/imagen/iconos/instagram-bn.jpg" alt="Instagram" className="h-5 w-5 mr-1.5" />
 );
 const EmailIcon = () => ( // Nuevo ícono de correo
-    <img src="/imagen/iconos/email-bn.png" alt="Correo Electrónico" className="h-4 w-4 mr-1.5" />
+    <img src="/imagen/iconos/email-bn.jpg" alt="Correo Electrónico" className="h-4 w-4 mr-1.5" />
 );
 const LocationIcon = () => (
-    <img src="/imagen/iconos/location-bn.png" alt="Ubicación" className="h-4 w-4 mr-1.5" />
+    <img src="/imagen/iconos/location-bn.jpg" alt="Ubicación" className="h-4 w-4 mr-1.5" />
 );
 const TruckIcon = () => (
-    <img src="/imagen/iconos/truck-bn.png" alt="Entrega" className="h-5 w-5 mr-2" />
+    <img src="/imagen/iconos/truck-bn.jpg" alt="Entrega" className="h-5 w-5 mr-2" />
 );
 
 // --- Componentes auxiliares ---
