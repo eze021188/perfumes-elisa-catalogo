@@ -24,8 +24,6 @@ const TruckIcon = () => (
 );
 
 // --- Componentes auxiliares ---
-// (SearchBar, CategoryFilters, ViewToggle, CartButton, formatCurrency, ProductDetailModal se mantienen igual que en la última versión completa que te proporcioné)
-// ... (asumo que estos componentes están definidos aquí o importados correctamente)
 function SearchBar({ onSearch }) {
     return (
         <div className="flex items-center bg-white rounded-lg shadow px-4 py-2 w-full max-w-xs md:max-w-sm">
@@ -40,20 +38,12 @@ function SearchBar({ onSearch }) {
 function CategoryFilters({ categories, selected, onSelect }) {
     return (
         <nav className="hidden md:flex items-center space-x-2">
-            {/* Excluimos 'INICIO' de los filtros directos en el header si se maneja diferente en móvil */}
-            {categories.filter(cat => cat !== 'INICIO').map(cat => (
+            {categories.map(cat => (
                 <button key={cat} onClick={() => onSelect(cat)}
                     className={`px-3 py-1 rounded-full font-medium text-sm ${selected === cat ? 'bg-black text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} shadow-sm transition-colors duration-200`}>
                     {cat}
                 </button>
             ))}
-            {/* Botón para volver a INICIO si no es la categoría seleccionada */}
-            {selected !== 'INICIO' && (
-                 <button onClick={() => onSelect('INICIO')}
-                    className={`px-3 py-1 rounded-full font-medium text-sm bg-gray-200 text-gray-700 hover:bg-gray-300 shadow-sm transition-colors duration-200`}>
-                    INICIO
-                </button>
-            )}
         </nav>
     );
 }
@@ -82,39 +72,82 @@ function CartButton({ count, onClick }) {
 
 const formatCurrency = (amount) => {
      const numericAmount = parseFloat(amount);
-     if (isNaN(numericAmount)) return '$0';
+     if (isNaN(numericAmount)) return '$0'; // Ajustado para que el fallback sea más genérico si no hay dígitos
      return numericAmount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 };
 
+// --- Componente Modal Detalle Producto ---
 function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
     if (!product) return null;
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-labelledby="product-detail-modal-title" role="dialog" aria-modal="true">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                {/* Cabecera de la Modal */}
                 <div className="flex justify-between items-center p-4 sm:p-5 border-b border-gray-200">
                     <h3 id="product-detail-modal-title" className="text-lg sm:text-xl font-semibold text-gray-900">{product.nombre}</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1" aria-label="Cerrar detalle de producto">
                         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
+
+                {/* Cuerpo de la Modal */}
                 <div className="p-4 sm:p-6 overflow-y-auto grid sm:grid-cols-2 gap-4 sm:gap-6">
+                    {/* Sección de Imagen */}
                     <div className="sm:order-1">
-                        <img src={product.imagenUrl || 'https://placehold.co/600x600?text=No+Image'} alt={product.nombre} className="w-full h-auto object-contain rounded-md max-h-[300px] sm:max-h-[400px] border border-gray-200" onError={e => { e.target.src = 'https://placehold.co/600x600?text=No+Image'; e.target.onerror = null; }} />
+                        <img 
+                            src={product.imagenUrl || 'https://placehold.co/600x600?text=No+Image'} 
+                            alt={product.nombre} 
+                            className="w-full h-auto object-contain rounded-md max-h-[300px] sm:max-h-[400px] border border-gray-200"
+                            onError={e => { e.target.src = 'https://placehold.co/600x600?text=No+Image'; e.target.onerror = null; }}
+                        />
                     </div>
+
+                    {/* Sección de Detalles */}
                     <div className="sm:order-2 flex flex-col">
+                        {/* Precio */}
                         <div className="mb-3">
+                            {/* CORREGIDO: Usar product.precio_normal y corregir typo */}
                             {product.promocion !== null && product.promocion < product.precio_normal ? (
-                                <><span className="text-gray-400 line-through text-md sm:text-lg">{formatCurrency(product.precio_normal)}</span><span className="text-green-600 font-bold text-xl sm:text-2xl ml-2">{formatCurrency(product.promocion)}</span></>
-                            ) : (<p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio_normal)}</p>)}
+                                <>
+                                    <span className="text-gray-400 line-through text-md sm:text-lg">{formatCurrency(product.precio_normal)}</span>
+                                    <span className="text-green-600 font-bold text-xl sm:text-2xl ml-2">{formatCurrency(product.promocion)}</span>
+                                </>
+                            ) : (
+                                <p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio_normal)}</p>
+                            )}
                         </div>
-                        <div className="mb-3 text-sm text-gray-600"><span className="font-medium text-gray-700">Categoría:</span> {product.categoria || 'No especificada'}</div>
-                        <div className="mb-4 text-sm text-gray-600"><span className="font-medium text-gray-700">Disponibles:</span> {product.stock}</div>
+                        {/* Categoría */}
+                        <div className="mb-3 text-sm text-gray-600">
+                            <span className="font-medium text-gray-700">Categoría:</span> {product.categoria || 'No especificada'}
+                        </div>
+                        {/* Disponibles */}
+                        <div className="mb-4 text-sm text-gray-600">
+                            <span className="font-medium text-gray-700">Disponibles:</span> {product.stock}
+                        </div>
+
+                        {/* Descripción Detallada (HTML) o Descripción Simple */}
                         <h4 className="font-semibold text-gray-800 mb-1 mt-2 text-md">Descripción Detallada:</h4>
                         {product.descripcion_html ? (
-                            <div className="prose prose-sm max-w-none text-gray-700 mb-4 flex-grow min-h-[60px]" dangerouslySetInnerHTML={{ __html: product.descripcion_html }} />
-                        ) : (<p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap flex-grow min-h-[60px]">{product.descripcion || "No hay descripción detallada para este producto."}</p>)}
+                            <div 
+                                className="prose prose-sm max-w-none text-gray-700 mb-4 flex-grow min-h-[60px]"
+                                dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
+                            />
+                        ) : (
+                            <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap flex-grow min-h-[60px]">
+                                {product.descripcion || "No hay descripción detallada para este producto."}
+                            </p>
+                        )}
+                        
+                        {/* Botón Añadir al Carrito */}
                         <div className="mt-auto">
-                            <button onClick={() => onAddToCart(product)} disabled={product.stock <= 0} className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm">{product.stock > 0 ? 'Agregar al carrito' : 'Agotado'}</button>
+                            <button
+                                onClick={() => onAddToCart(product)}
+                                disabled={product.stock <= 0}
+                                className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+                            >
+                                {product.stock > 0 ? 'Agregar al carrito' : 'Agotado'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -122,29 +155,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
         </div>
     );
 }
-
-// --- Componente Footer ---
-function AppFooter() {
-    const currentYear = new Date().getFullYear();
-    // Reemplaza "/terminos" y "/privacidad" con tus rutas reales si las tienes.
-    return (
-        <footer className="bg-gray-800 text-gray-300 text-xs p-6 text-center mt-auto">
-            <p className="mb-2">
-                Derechos de Reproducción © 2024-{currentYear} PerfumesElisa.com – Todos los derechos reservados.
-            </p>
-            <p className="mb-2">
-                No se permite copiar nada sin autorización previa por escrito.
-            </p>
-            <p className="mb-2">
-                Favor de leer los <a href="/terminos" className="underline hover:text-gray-100">Términos del Servicio</a> y la <a href="/privacidad" className="underline hover:text-gray-100">Política de Privacidad</a>.
-            </p>
-            <p>
-                Perfumes Elisa, México.
-            </p>
-        </footer>
-    );
-}
-
 
 // --- Componente Principal ---
 export default function CatalogPage() {
@@ -169,7 +179,7 @@ export default function CatalogPage() {
             if (error) {
                 console.error('Error fetching products:', error); setError(error); toast.error('Error al cargar los productos.');
             } else {
-                const productsWithCorrectData = data.map(p => {
+                const productsWithCorrectData = data.map(p => { // Renombrado para claridad
                     let imagenUrl = '';
                     if (p.imagen && supabase.storage) {
                          const { data: publicUrlData } = supabase.storage.from('productos').getPublicUrl(p.imagen);
@@ -178,11 +188,22 @@ export default function CatalogPage() {
                     if (!imagenUrl || imagenUrl.includes('null')) {
                         imagenUrl = 'https://placehold.co/400x400?text=No+Image';
                     }
+
                      const precioNormalNumerico = parseFloat(p.precio_normal) || 0;
                      const promocionNumerica = parseFloat(p.promocion);
-                     return { ...p, imagenUrl, stock: parseFloat(p.stock) || 0, precio_normal: precioNormalNumerico, promocion: isNaN(promocionNumerica) ? null : promocionNumerica };
+                     
+                     return { 
+                        ...p, 
+                        imagenUrl, 
+                        stock: parseFloat(p.stock) || 0, 
+                        precio_normal: precioNormalNumerico, 
+                        promocion: isNaN(promocionNumerica) ? null : promocionNumerica,
+                        // descripcion_html ya viene con ...p si existe en la base de datos
+                        // descripcion (simple) también ya viene con ...p
+                     };
                 });
-                setProductos(productsWithCorrectData); setFiltered(productsWithCorrectData);
+                setProductos(productsWithCorrectData); 
+                setFiltered(productsWithCorrectData);
             }
             setLoading(false);
         }
@@ -194,12 +215,16 @@ export default function CatalogPage() {
         if (selectedCat && selectedCat !== 'INICIO') { temp = temp.filter(p => p.categoria === selectedCat); }
         if (searchTerm) {
             const lowerCaseSearchTerm = searchTerm.toLowerCase();
-            temp = temp.filter(p => p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)) || (p.descripcion_html && p.descripcion_html.toLowerCase().includes(lowerCaseSearchTerm)));
+            temp = temp.filter(p => 
+                p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || 
+                (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                (p.descripcion_html && p.descripcion_html.toLowerCase().includes(lowerCaseSearchTerm))
+            );
         }
         setFiltered(temp);
     }, [searchTerm, selectedCat, productos]);
     
-    const addToCart = producto => { /* ... sin cambios ... */ 
+    const addToCart = producto => {
         const currentStock = parseFloat(producto.stock) || 0;
         const itemInCart = cartItems.find(item => item.id === producto.id);
         const currentQuantityInCart = itemInCart ? itemInCart.qty : 0;
@@ -210,7 +235,7 @@ export default function CatalogPage() {
         });
          toast.success(`${producto.nombre} añadido a la solicitud.`);
     };
-    const decrementItem = (productId) => { /* ... sin cambios ... */ 
+    const decrementItem = (productId) => {
         setCartItems(prev => {
             const itemToUpdate = prev.find(item => item.id === productId);
             if (!itemToUpdate) return prev;
@@ -218,24 +243,31 @@ export default function CatalogPage() {
             return prev.map(item => item.id === productId ? { ...item, qty: item.qty - 1 } : item);
         });
     };
-    const removeItem = (productId) => { /* ... sin cambios ... */ 
+    const removeItem = (productId) => {
         setCartItems(prev => {
             const itemToRemove = prev.find(item => item.id === productId);
             if (itemToRemove) toast(`Eliminado ${itemToRemove.nombre} de la solicitud.`, { icon: '🗑️' });
             return prev.filter(item => item.id !== productId);
         });
     };
+
+    // CORREGIDO: Usar precio_normal como el precio original para el cálculo de descuento
     const calculateDiscountPercentage = (originalPrice, salePrice) => {
-        const original = parseFloat(originalPrice); const sale = parseFloat(salePrice);
-        if (isNaN(original) || isNaN(sale) || original <= 0 || sale >= original || sale === null) { return null; }
+        const original = parseFloat(originalPrice); 
+        const sale = parseFloat(salePrice);
+        if (isNaN(original) || isNaN(sale) || original <= 0 || sale >= original || sale === null) {
+             return null;
+        }
         const percentage = ((original - sale) / original) * 100;
         return Math.round(percentage);
     };
-    const handleWhatsAppRequest = () => { /* ... sin cambios, pero usa precios corregidos ... */ 
+
+    const handleWhatsAppRequest = () => {
         if (cartItems.length === 0) { toast.error("El carrito está vacío."); return; }
         const phoneNumber = '528130804010';
         let message = "¡Hola! Me gustaría solicitar los siguientes productos:\n\n";
         cartItems.forEach(item => {
+            // CORREGIDO: Usar precio_normal y promocion para determinar el precio final
             const finalPrice = (item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal;
             const itemPriceString = formatCurrency(finalPrice);
             message += `- ${item.qty}x ${item.nombre} - ${itemPriceString}\n`;
@@ -247,9 +279,17 @@ export default function CatalogPage() {
         setIsCartOpen(false);
     };
 
-    const handleProductClick = (product) => { setSelectedProductDetail(product); setIsProductDetailModalOpen(true); };
-    const closeProductDetailModal = () => { setIsProductDetailModalOpen(false); setSelectedProductDetail(null); };
-    const handleAddToCartFromDetail = (product) => { addToCart(product); };
+    const handleProductClick = (product) => {
+        setSelectedProductDetail(product);
+        setIsProductDetailModalOpen(true);
+    };
+    const closeProductDetailModal = () => {
+        setIsProductDetailModalOpen(false);
+        setSelectedProductDetail(null);
+    };
+    const handleAddToCartFromDetail = (product) => {
+        addToCart(product);
+    };
 
     if (loading) return <div className="text-center p-8 text-gray-700">Cargando productos...</div>;
     if (error) return <div className="text-center p-8 text-red-600">Error: {error.message}</div>;
@@ -271,7 +311,7 @@ export default function CatalogPage() {
                  </div>
              </header>
 
-            <main className="pt-16 flex flex-1 pb-16"> {/* Añadido pb-16 para que el contenido no quede debajo del footer */}
+            <main className="pt-16 flex flex-1">
                 <aside className={`fixed lg:static inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white shadow-lg lg:shadow-none z-40 overflow-y-auto px-6 pb-6 pt-16 lg:p-6`}>
                      <div className="mb-8 text-center lg:hidden">
                          <img src="/imagen/PERFUMESELISAwhite.jpg" alt="Logo Perfumes Elisa" className="mx-auto h-16 w-auto" />
@@ -312,120 +352,73 @@ export default function CatalogPage() {
                 </aside>
 
                 <section className="flex-1 p-6 lg:ml-64">
-                    {/* === INICIO: MODIFICACIÓN PARA CATEGORÍAS EN MÓVIL === */}
-                    {selectedCat === 'INICIO' ? (
-                        <>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-6 hidden md:block">
-                                INICIO
-                            </h2>
-                            <div className="md:hidden mb-6"> {/* Visible solo en pantallas pequeñas (<md) */}
-                                <h3 className="text-xl font-semibold text-gray-700 mb-4">Categorías</h3>
-                                <nav className="space-y-2">
-                                    {categorias.filter(cat => cat !== 'INICIO').map(cat => (
-                                        <button
-                                            key={cat}
-                                            onClick={() => {
-                                                setSelectedCat(cat);
-                                                if (isSidebarOpen) setIsSidebarOpen(false); // Cerrar sidebar si está abierta en móvil
-                                            }}
-                                            className="block w-full text-left px-4 py-3 rounded-md text-gray-700 bg-gray-100 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-150 shadow-sm"
-                                        >
-                                            {cat}
-                                        </button>
-                                    ))}
-                                </nav>
-                            </div>
-                        </>
-                    ) : (
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                            {selectedCat}{' '}
-                            <span 
-                                className="text-gray-500 text-base font-normal cursor-pointer hover:underline" 
-                                onClick={() => setSelectedCat('INICIO')}
-                            >
-                                (Ver todo)
-                            </span>
-                        </h2>
-                    )}
-                    {/* === FIN: MODIFICACIÓN PARA CATEGORÍAS EN MÓVIL === */}
-
-                    {filtered.length === 0 && !loading && !error && selectedCat !== 'INICIO' ? (
-                        <p className="text-center text-gray-500 mt-8">
-                            No se encontraron productos que coincidan con tu búsqueda o filtro.
-                        </p>
-                    ) : filtered.length === 0 && !loading && !error && selectedCat === 'INICIO' && searchTerm ? (
-                        <p className="text-center text-gray-500 mt-8">
-                            No se encontraron productos que coincidan con tu búsqueda. Intenta con otra categoría.
-                        </p>
-                    ) : null }
-                    
-                    {/* Solo mostrar productos si no estamos en INICIO en móvil y queremos mostrar categorías en su lugar, O si hay productos filtrados */}
-                    { !(selectedCat === 'INICIO' && typeof window !== 'undefined' && window.innerWidth < 768 && !searchTerm) && (
-                        viewMode === 'grid' ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 md:gap-8">
-                                {filtered.map(p => { 
-                                    const disc = calculateDiscountPercentage(p.precio_normal, p.promocion); 
-                                    return (
-                                    <div key={p.id} onClick={() => handleProductClick(p)} className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200">
-                                        {disc != null && (<span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">-{disc}%</span>)}
-                                        <div className="w-full h-64 overflow-hidden bg-gray-100">
-                                            {p.imagenUrl ? (<img src={p.imagenUrl} alt={p.nombre} className="w-full h-full object-cover object-center" onError={e => { e.target.src = 'https://placehold.co/400x400?text=No+Image'; e.target.onerror = null; }} />) : 
-                                            (<div className="w-full h-full flex items-center justify-center text-gray-500 text-sm p-4">No Image</div>)}
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6">{selectedCat} {selectedCat !== 'INICIO' && (<span className="text-gray-500 text-base font-normal cursor-pointer hover:underline" onClick={() => setSelectedCat('INICIO')}>(Ver todo)</span>)}</h2>
+                    {filtered.length === 0 && !loading && !error ? (<p className="text-center text-gray-500 mt-8">No se encontraron productos que coincidan con tu búsqueda o filtro.</p>) : 
+                    viewMode === 'grid' ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 md:gap-8">
+                            {filtered.map(p => { 
+                                // CORREGIDO: Usar p.precio_normal para calcular el descuento
+                                const disc = calculateDiscountPercentage(p.precio_normal, p.promocion); 
+                                return (
+                                <div key={p.id} onClick={() => handleProductClick(p)} className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200">
+                                    {disc != null && (<span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">-{disc}%</span>)}
+                                    <div className="w-full h-64 overflow-hidden bg-gray-100">
+                                        {p.imagenUrl ? (<img src={p.imagenUrl} alt={p.nombre} className="w-full h-full object-cover object-center" onError={e => { e.target.src = 'https://placehold.co/400x400?text=No+Image'; e.target.onerror = null; }} />) : 
+                                        (<div className="w-full h-full flex items-center justify-center text-gray-500 text-sm p-4">No Image</div>)}
+                                    </div>
+                                    <div className="p-4 flex flex-col flex-grow">
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{p.nombre}</h3>
+                                        {/* CORREGIDO: Usar p.precio_normal */}
+                                        {p.promocion !== null && p.promocion < p.precio_normal ? (
+                                        <div className="flex items-baseline space-x-2 mb-2">
+                                            <span className="text-gray-500 line-through text-sm">{formatCurrency(p.precio_normal)}</span>
+                                            <span className="text-green-600 font-bold text-lg">{formatCurrency(p.promocion)}</span>
                                         </div>
-                                        <div className="p-4 flex flex-col flex-grow">
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{p.nombre}</h3>
-                                            {p.promocion !== null && p.promocion < p.precio_normal ? (
-                                            <div className="flex items-baseline space-x-2 mb-2">
-                                                <span className="text-gray-500 line-through text-sm">{formatCurrency(p.precio_normal)}</span>
-                                                <span className="text-green-600 font-bold text-lg">{formatCurrency(p.promocion)}</span>
-                                            </div>
-                                            ) : (
-                                            <p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio_normal)}</p>
-                                            )}
-                                            <p className="text-sm text-gray-600">Stock: <span className="font-medium">{p.stock}</span></p>
-                                            <div className="flex justify-end mt-auto pt-2">
-                                                <button onClick={(e) => { e.stopPropagation(); addToCart(p);}} disabled={p.stock <= 0} className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 transition-colors text-xs" title="Agregar al carrito" aria-label={`Agregar ${p.nombre} al carrito`}>+</button>
-                                            </div>
+                                        ) : (
+                                        <p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio_normal)}</p>
+                                        )}
+                                        <p className="text-sm text-gray-600">Stock: <span className="font-medium">{p.stock}</span></p>
+                                        <div className="flex justify-end mt-auto pt-2">
+                                            <button onClick={(e) => { e.stopPropagation(); addToCart(p);}} disabled={p.stock <= 0} className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 transition-colors text-xs" title="Agregar al carrito" aria-label={`Agregar ${p.nombre} al carrito`}>+</button>
                                         </div>
-                                    </div>);
-                                })}
-                            </div>
-                        ) : ( 
-                            <ul className="space-y-4">
-                                {filtered.map(p => (
-                                    <li key={p.id} onClick={() => handleProductClick(p)} className="bg-white p-4 rounded shadow flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow duration-200">
-                                        <div className="flex items-center space-x-4 flex-1 min-w-0">
-                                            <img src={p.imagenUrl || 'https://placehold.co/80x80?text=No+Image'} alt={p.nombre} className="w-20 h-20 object-cover rounded flex-shrink-0" onError={e => { e.target.src = 'https://placehold.co/80x80?text=No+Image'; e.target.onerror = null; }} />
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-semibold text-gray-900 truncate">{p.nombre}</h4>
-                                                <div className="mt-1">
-                                                    {p.promocion !== null && p.promocion < p.precio_normal ? (
-                                                    <>
-                                                        <span className="text-green-600 font-bold">{formatCurrency(p.promocion)}</span>
-                                                        <span className="text-gray-400 line-through ml-2 text-sm">{formatCurrency(p.precio_normal)}</span>
-                                                    </>
-                                                    ) : (
-                                                    <span className="font-bold text-gray-700">{formatCurrency(p.precio_normal)}</span>
-                                                    )}
-                                                </div>
-                                                <p className="text-sm text-gray-600 mt-1">Stock: <span className="font-medium">{p.stock}</span></p>
+                                    </div>
+                                </div>);
+                            })}
+                        </div>
+                    ) : ( 
+                        <ul className="space-y-4">
+                            {filtered.map(p => (
+                                <li key={p.id} onClick={() => handleProductClick(p)} className="bg-white p-4 rounded shadow flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow duration-200">
+                                    <div className="flex items-center space-x-4 flex-1 min-w-0">
+                                        <img src={p.imagenUrl || 'https://placehold.co/80x80?text=No+Image'} alt={p.nombre} className="w-20 h-20 object-cover rounded flex-shrink-0" onError={e => { e.target.src = 'https://placehold.co/80x80?text=No+Image'; e.target.onerror = null; }} />
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-semibold text-gray-900 truncate">{p.nombre}</h4>
+                                            {/* CORREGIDO: Usar p.precio_normal */}
+                                            <div className="mt-1">
+                                                {p.promocion !== null && p.promocion < p.precio_normal ? (
+                                                <>
+                                                    <span className="text-green-600 font-bold">{formatCurrency(p.promocion)}</span>
+                                                    <span className="text-gray-400 line-through ml-2 text-sm">{formatCurrency(p.precio_normal)}</span>
+                                                </>
+                                                ) : (
+                                                <span className="font-bold text-gray-700">{formatCurrency(p.precio_normal)}</span>
+                                                )}
                                             </div>
+                                            <p className="text-sm text-gray-600 mt-1">Stock: <span className="font-medium">{p.stock}</span></p>
                                         </div>
-                                        <button onClick={(e) => { e.stopPropagation(); addToCart(p);}} disabled={p.stock <= 0} className="bg-black text-white p-2 rounded-full disabled:opacity-50 transition-colors ml-4 flex-shrink-0 text-xs" title="Agregar al carrito" aria-label={`Agregar ${p.nombre} al carrito`}>+</button>
-                                    </li>
-                                ))}
-                            </ul>
-                        )
+                                    </div>
+                                    <button onClick={(e) => { e.stopPropagation(); addToCart(p);}} disabled={p.stock <= 0} className="bg-black text-white p-2 rounded-full disabled:opacity-50 transition-colors ml-4 flex-shrink-0 text-xs" title="Agregar al carrito" aria-label={`Agregar ${p.nombre} al carrito`}>+</button>
+                                </li>
+                            ))}
+                        </ul>
                     )}
                 </section>
             </main>
 
-            {/* Overlay */}
             {(isSidebarOpen || isCartOpen || isProductDetailModalOpen) && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-30" onClick={() => { if (isSidebarOpen) setIsSidebarOpen(false); if (isCartOpen) setIsCartOpen(false); if (isProductDetailModalOpen) closeProductDetailModal();}} aria-hidden="true"></div>
             )}
 
-            {/* Cart Modal */}
             {isCartOpen && ( 
                 <div className="fixed inset-0 z-40 flex items-center justify-center p-4"  aria-labelledby="cart-modal-title" role="dialog" aria-modal="true">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
@@ -441,7 +434,13 @@ export default function CatalogPage() {
                                 <li key={item.id} className="flex items-center justify-between py-4">
                                     <div className="flex items-center space-x-3">
                                         <img src={item.imagenUrl || 'https://placehold.co/60x60?text=No+Image'} alt={item.nombre} className="w-16 h-16 object-cover rounded border border-gray-200" onError={e => { e.target.src = 'https://placehold.co/60x60?text=No+Image'; e.target.onerror = null; }} />
-                                        <div className="flex-1"><p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p><p className="text-gray-600 text-sm">{formatCurrency((item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal)}</p></div>
+                                        <div className="flex-1">
+                                            <p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p>
+                                            {/* CORREGIDO: Usar precio_normal y promocion para determinar el precio final */}
+                                            <p className="text-gray-600 text-sm">
+                                                {formatCurrency((item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal)}
+                                            </p>
+                                        </div>
                                     </div>
                                     <div className="flex items-center space-x-2 ml-3">
                                         <button onClick={() => decrementItem(item.id)} className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-30" disabled={item.qty <= 1} title="Disminuir cantidad" aria-label={`Disminuir cantidad de ${item.nombre}`}><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" /></svg></button>
@@ -460,7 +459,6 @@ export default function CatalogPage() {
                 </div>
             )}
 
-            {/* Product Detail Modal */}
             {isProductDetailModalOpen && selectedProductDetail && (
                 <ProductDetailModal 
                     product={selectedProductDetail} 
@@ -469,9 +467,6 @@ export default function CatalogPage() {
                     formatCurrency={formatCurrency}
                 />
             )}
-
-            {/* Footer Añadido */}
-            <AppFooter />
         </div>
     );
 }
