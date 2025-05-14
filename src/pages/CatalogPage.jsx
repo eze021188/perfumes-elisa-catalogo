@@ -5,22 +5,22 @@ import toast from 'react-hot-toast';
 
 // --- Íconos PNG ---
 const WhatsAppIcon = () => (
-    <img src="/imagen/iconos/whatsapp-bn.jpg" alt="WhatsApp" className="h-5 w-5 mr-1.5" />
+    <img src="/imagen/iconos/whatsapp-bn.png" alt="WhatsApp" className="h-5 w-5 mr-1.5" />
 );
 const FacebookIcon = () => (
-    <img src="/imagen/iconos/facebook-bn.jpg" alt="Facebook" className="h-5 w-5 mr-1.5" />
+    <img src="/imagen/iconos/facebook-bn.png" alt="Facebook" className="h-5 w-5 mr-1.5" />
 );
 const InstagramIcon = () => (
-    <img src="/imagen/iconos/instagram-bn.jpg" alt="Instagram" className="h-5 w-5 mr-1.5" />
+    <img src="/imagen/iconos/instagram-bn.png" alt="Instagram" className="h-5 w-5 mr-1.5" />
 );
 const EmailIcon = () => (
-    <img src="/imagen/iconos/email-bn.jpg" alt="Correo Electrónico" className="h-4 w-4 mr-1.5" />
+    <img src="/imagen/iconos/email-bn.png" alt="Correo Electrónico" className="h-4 w-4 mr-1.5" />
 );
 const LocationIcon = () => (
-    <img src="/imagen/iconos/location-bn.jpg" alt="Ubicación" className="h-4 w-4 mr-1.5" />
+    <img src="/imagen/iconos/location-bn.png" alt="Ubicación" className="h-4 w-4 mr-1.5" />
 );
 const TruckIcon = () => (
-    <img src="/imagen/iconos/truck-bn.jpg" alt="Entrega" className="h-5 w-5 mr-2" />
+    <img src="/imagen/iconos/truck-bn.png" alt="Entrega" className="h-5 w-5 mr-2" />
 );
 
 // --- Componentes auxiliares ---
@@ -35,12 +35,20 @@ function SearchBar({ onSearch }) {
     );
 }
 
+// Componente CategoryFilters (usado tanto en header para desktop como en contenido para mobile)
 function CategoryFilters({ categories, selected, onSelect }) {
     return (
-        <nav className="hidden md:flex items-center space-x-2">
+        <nav className="flex items-center space-x-2"> {/* El scroll horizontal lo manejará el div wrapper en mobile */}
             {categories.map(cat => (
-                <button key={cat} onClick={() => onSelect(cat)}
-                    className={`px-3 py-1 rounded-full font-medium text-sm ${selected === cat ? 'bg-black text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} shadow-sm transition-colors duration-200`}>
+                <button
+                    key={cat}
+                    onClick={() => onSelect(cat)}
+                    className={`px-3 py-1 rounded-full font-medium text-sm whitespace-nowrap ${
+                        selected === cat
+                            ? 'bg-black text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    } shadow-sm transition-colors duration-200`}
+                >
                     {cat}
                 </button>
             ))}
@@ -72,7 +80,7 @@ function CartButton({ count, onClick }) {
 
 const formatCurrency = (amount) => {
      const numericAmount = parseFloat(amount);
-     if (isNaN(numericAmount)) return '$0'; // Ajustado para que el fallback sea más genérico si no hay dígitos
+     if (isNaN(numericAmount)) return '$0.00';
      return numericAmount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 };
 
@@ -83,17 +91,13 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-labelledby="product-detail-modal-title" role="dialog" aria-modal="true">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                {/* Cabecera de la Modal */}
                 <div className="flex justify-between items-center p-4 sm:p-5 border-b border-gray-200">
                     <h3 id="product-detail-modal-title" className="text-lg sm:text-xl font-semibold text-gray-900">{product.nombre}</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1" aria-label="Cerrar detalle de producto">
                         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
-
-                {/* Cuerpo de la Modal */}
                 <div className="p-4 sm:p-6 overflow-y-auto grid sm:grid-cols-2 gap-4 sm:gap-6">
-                    {/* Sección de Imagen */}
                     <div className="sm:order-1">
                         <img 
                             src={product.imagenUrl || 'https://placehold.co/600x600?text=No+Image'} 
@@ -102,44 +106,27 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                             onError={e => { e.target.src = 'https://placehold.co/600x600?text=No+Image'; e.target.onerror = null; }}
                         />
                     </div>
-
-                    {/* Sección de Detalles */}
                     <div className="sm:order-2 flex flex-col">
-                        {/* Precio */}
                         <div className="mb-3">
-                            {/* CORREGIDO: Usar product.precio_normal y corregir typo */}
-                            {product.promocion !== null && product.promocion < product.precio_normal ? (
+                            {product.promocion !== null && product.promocion < product.precio ? (
                                 <>
-                                    <span className="text-gray-400 line-through text-md sm:text-lg">{formatCurrency(product.precio_normal)}</span>
+                                    <span className="text-gray-400 line-through text-md sm:text-lg">{formatCurrency(product.precio)}</span>
                                     <span className="text-green-600 font-bold text-xl sm:text-2xl ml-2">{formatCurrency(product.promocion)}</span>
                                 </>
                             ) : (
-                                <p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio_normal)}</p>
+                                <p className="text-gray-800 font-bold text-xl sm:text-2xl">{formatCurrency(product.precio)}</p>
                             )}
                         </div>
-                        {/* Categoría */}
                         <div className="mb-3 text-sm text-gray-600">
                             <span className="font-medium text-gray-700">Categoría:</span> {product.categoria || 'No especificada'}
                         </div>
-                        {/* Disponibles */}
                         <div className="mb-4 text-sm text-gray-600">
                             <span className="font-medium text-gray-700">Disponibles:</span> {product.stock}
                         </div>
-
-                        {/* Descripción Detallada (HTML) o Descripción Simple */}
-                        <h4 className="font-semibold text-gray-800 mb-1 mt-2 text-md">Descripción Detallada:</h4>
-                        {product.descripcion_html ? (
-                            <div 
-                                className="prose prose-sm max-w-none text-gray-700 mb-4 flex-grow min-h-[60px]"
-                                dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
-                            />
-                        ) : (
-                            <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap flex-grow min-h-[60px]">
-                                {product.descripcion || "No hay descripción detallada para este producto."}
-                            </p>
-                        )}
-                        
-                        {/* Botón Añadir al Carrito */}
+                        <h4 className="font-semibold text-gray-800 mb-1 mt-2 text-md">Descripción:</h4>
+                        <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap flex-grow min-h-[60px]">
+                            {product.descripcion || "No hay descripción detallada para este producto."}
+                        </p>
                         <div className="mt-auto">
                             <button
                                 onClick={() => onAddToCart(product)}
@@ -179,7 +166,7 @@ export default function CatalogPage() {
             if (error) {
                 console.error('Error fetching products:', error); setError(error); toast.error('Error al cargar los productos.');
             } else {
-                const productsWithCorrectData = data.map(p => { // Renombrado para claridad
+                const productsWithPublicUrls = data.map(p => {
                     let imagenUrl = '';
                     if (p.imagen && supabase.storage) {
                          const { data: publicUrlData } = supabase.storage.from('productos').getPublicUrl(p.imagen);
@@ -188,22 +175,12 @@ export default function CatalogPage() {
                     if (!imagenUrl || imagenUrl.includes('null')) {
                         imagenUrl = 'https://placehold.co/400x400?text=No+Image';
                     }
-
-                     const precioNormalNumerico = parseFloat(p.precio_normal) || 0;
+                     const stockNumerico = parseFloat(p.stock) || 0;
+                     const precioNumerico = parseFloat(p.precio) || 0;
                      const promocionNumerica = parseFloat(p.promocion);
-                     
-                     return { 
-                        ...p, 
-                        imagenUrl, 
-                        stock: parseFloat(p.stock) || 0, 
-                        precio_normal: precioNormalNumerico, 
-                        promocion: isNaN(promocionNumerica) ? null : promocionNumerica,
-                        // descripcion_html ya viene con ...p si existe en la base de datos
-                        // descripcion (simple) también ya viene con ...p
-                     };
+                     return { ...p, imagenUrl, stock: stockNumerico, precio: precioNumerico, promocion: isNaN(promocionNumerica) ? null : promocionNumerica };
                 });
-                setProductos(productsWithCorrectData); 
-                setFiltered(productsWithCorrectData);
+                setProductos(productsWithPublicUrls); setFiltered(productsWithPublicUrls);
             }
             setLoading(false);
         }
@@ -215,11 +192,7 @@ export default function CatalogPage() {
         if (selectedCat && selectedCat !== 'INICIO') { temp = temp.filter(p => p.categoria === selectedCat); }
         if (searchTerm) {
             const lowerCaseSearchTerm = searchTerm.toLowerCase();
-            temp = temp.filter(p => 
-                p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || 
-                (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)) ||
-                (p.descripcion_html && p.descripcion_html.toLowerCase().includes(lowerCaseSearchTerm))
-            );
+            temp = temp.filter(p => p.nombre.toLowerCase().includes(lowerCaseSearchTerm) || (p.descripcion && p.descripcion.toLowerCase().includes(lowerCaseSearchTerm)));
         }
         setFiltered(temp);
     }, [searchTerm, selectedCat, productos]);
@@ -250,27 +223,18 @@ export default function CatalogPage() {
             return prev.filter(item => item.id !== productId);
         });
     };
-
-    // CORREGIDO: Usar precio_normal como el precio original para el cálculo de descuento
     const calculateDiscountPercentage = (originalPrice, salePrice) => {
-        const original = parseFloat(originalPrice); 
-        const sale = parseFloat(salePrice);
-        if (isNaN(original) || isNaN(sale) || original <= 0 || sale >= original || sale === null) {
-             return null;
-        }
-        const percentage = ((original - sale) / original) * 100;
-        return Math.round(percentage);
+        const original = parseFloat(originalPrice); const sale = parseFloat(salePrice);
+        if (isNaN(original) || isNaN(sale) || original <= 0 || sale >= original) return null;
+        return Math.round(((original - sale) / original) * 100);
     };
-
     const handleWhatsAppRequest = () => {
         if (cartItems.length === 0) { toast.error("El carrito está vacío."); return; }
         const phoneNumber = '528130804010';
         let message = "¡Hola! Me gustaría solicitar los siguientes productos:\n\n";
         cartItems.forEach(item => {
-            // CORREGIDO: Usar precio_normal y promocion para determinar el precio final
-            const finalPrice = (item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal;
-            const itemPriceString = formatCurrency(finalPrice);
-            message += `- ${item.qty}x ${item.nombre} - ${itemPriceString}\n`;
+            const itemPrice = formatCurrency(item.promocion !== null ? item.promocion : item.precio);
+            message += `- ${item.qty}x ${item.nombre} - ${itemPrice}\n`;
         });
         message += "\nPor favor, confirmar disponibilidad y detalles de entrega/recogida.";
         const encodedMessage = encodeURIComponent(message);
@@ -302,9 +266,12 @@ export default function CatalogPage() {
                           {isSidebarOpen ? (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>) : (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>)}
                      </button>
                      <SearchBar onSearch={setSearchTerm} />
-                     <img src="/imagen/PERFUMESELISAwhite.jpg" alt="Perfumes Elisa Logo" className="h-12 object-contain hidden lg:block" />
+                     <img src="/imagen/PERFUMESELISA.jpg" alt="Perfumes Elisa Logo" className="h-12 object-contain hidden lg:block" />
                      <div className="flex items-center space-x-4">
-                          <CategoryFilters categories={categorias} selected={selectedCat} onSelect={setSelectedCat} />
+                          {/* Filtros de Categoría para Desktop (en el header) */}
+                          <div className="hidden md:flex">
+                            <CategoryFilters categories={categorias} selected={selectedCat} onSelect={setSelectedCat} />
+                          </div>
                           <ViewToggle view={viewMode} onChange={setViewMode} />
                           <CartButton count={cartItems.reduce((sum, i) => sum + i.qty, 0)} onClick={() => setIsCartOpen(true)} />
                      </div>
@@ -314,7 +281,7 @@ export default function CatalogPage() {
             <main className="pt-16 flex flex-1">
                 <aside className={`fixed lg:static inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white shadow-lg lg:shadow-none z-40 overflow-y-auto px-6 pb-6 pt-16 lg:p-6`}>
                      <div className="mb-8 text-center lg:hidden">
-                         <img src="/imagen/PERFUMESELISAwhite.jpg" alt="Logo Perfumes Elisa" className="mx-auto h-16 w-auto" />
+                         <img src="/imagen/PERFUMESELISA.jpg" alt="Logo Perfumes Elisa" className="mx-auto h-16 w-auto" />
                      </div>
                     <div className="mb-6 border-b border-gray-200 pb-4">
                         <h3 className="font-semibold text-gray-800 mb-2 text-sm">ENTRA EN CONTACTO</h3>
@@ -352,14 +319,26 @@ export default function CatalogPage() {
                 </aside>
 
                 <section className="flex-1 p-6 lg:ml-64">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">{selectedCat} {selectedCat !== 'INICIO' && (<span className="text-gray-500 text-base font-normal cursor-pointer hover:underline" onClick={() => setSelectedCat('INICIO')}>(Ver todo)</span>)}</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                        {selectedCat}{' '}
+                        {selectedCat !== 'INICIO' && (<span className="text-gray-500 text-base font-normal cursor-pointer hover:underline" onClick={() => setSelectedCat('INICIO')}>(Ver todo)</span>)}
+                    </h2>
+
+                    {/* Filtros de Categoría para Móvil (debajo del H2, arriba de los productos) */}
+                    <div className="md:hidden mb-6"> {/* Solo visible en pantallas pequeñas hasta 'md' */}
+                        <div className="overflow-x-auto pb-2"> {/* Div para permitir scroll horizontal si las categorías exceden el ancho */}
+                            <CategoryFilters
+                                categories={categorias.filter(cat => cat !== 'INICIO')} // No mostrar "INICIO" aquí, ya está en el H2
+                                selected={selectedCat}
+                                onSelect={setSelectedCat}
+                            />
+                        </div>
+                    </div>
+                    
                     {filtered.length === 0 && !loading && !error ? (<p className="text-center text-gray-500 mt-8">No se encontraron productos que coincidan con tu búsqueda o filtro.</p>) : 
                     viewMode === 'grid' ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 md:gap-8">
-                            {filtered.map(p => { 
-                                // CORREGIDO: Usar p.precio_normal para calcular el descuento
-                                const disc = calculateDiscountPercentage(p.precio_normal, p.promocion); 
-                                return (
+                            {filtered.map(p => { const disc = calculateDiscountPercentage(p.precio, p.promocion); return (
                                 <div key={p.id} onClick={() => handleProductClick(p)} className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200">
                                     {disc != null && (<span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">-{disc}%</span>)}
                                     <div className="w-full h-64 overflow-hidden bg-gray-100">
@@ -368,15 +347,9 @@ export default function CatalogPage() {
                                     </div>
                                     <div className="p-4 flex flex-col flex-grow">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{p.nombre}</h3>
-                                        {/* CORREGIDO: Usar p.precio_normal */}
-                                        {p.promocion !== null && p.promocion < p.precio_normal ? (
-                                        <div className="flex items-baseline space-x-2 mb-2">
-                                            <span className="text-gray-500 line-through text-sm">{formatCurrency(p.precio_normal)}</span>
-                                            <span className="text-green-600 font-bold text-lg">{formatCurrency(p.promocion)}</span>
-                                        </div>
-                                        ) : (
-                                        <p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio_normal)}</p>
-                                        )}
+                                        {p.promocion !== null && p.promocion < p.precio ? (
+                                        <div className="flex items-baseline space-x-2 mb-2"><span className="text-gray-500 line-through text-sm">{formatCurrency(p.precio)}</span><span className="text-green-600 font-bold text-lg">{formatCurrency(p.promocion)}</span></div>) : 
+                                        (<p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio)}</p>)}
                                         <p className="text-sm text-gray-600">Stock: <span className="font-medium">{p.stock}</span></p>
                                         <div className="flex justify-end mt-auto pt-2">
                                             <button onClick={(e) => { e.stopPropagation(); addToCart(p);}} disabled={p.stock <= 0} className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 transition-colors text-xs" title="Agregar al carrito" aria-label={`Agregar ${p.nombre} al carrito`}>+</button>
@@ -393,17 +366,7 @@ export default function CatalogPage() {
                                         <img src={p.imagenUrl || 'https://placehold.co/80x80?text=No+Image'} alt={p.nombre} className="w-20 h-20 object-cover rounded flex-shrink-0" onError={e => { e.target.src = 'https://placehold.co/80x80?text=No+Image'; e.target.onerror = null; }} />
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-semibold text-gray-900 truncate">{p.nombre}</h4>
-                                            {/* CORREGIDO: Usar p.precio_normal */}
-                                            <div className="mt-1">
-                                                {p.promocion !== null && p.promocion < p.precio_normal ? (
-                                                <>
-                                                    <span className="text-green-600 font-bold">{formatCurrency(p.promocion)}</span>
-                                                    <span className="text-gray-400 line-through ml-2 text-sm">{formatCurrency(p.precio_normal)}</span>
-                                                </>
-                                                ) : (
-                                                <span className="font-bold text-gray-700">{formatCurrency(p.precio_normal)}</span>
-                                                )}
-                                            </div>
+                                            <div className="mt-1">{p.promocion !== null && p.promocion < p.precio ? (<><span className="text-green-600 font-bold">{formatCurrency(p.promocion)}</span><span className="text-gray-400 line-through ml-2 text-sm">{formatCurrency(p.precio)}</span></>) : (<span className="font-bold text-gray-700">{formatCurrency(p.precio)}</span>)}</div>
                                             <p className="text-sm text-gray-600 mt-1">Stock: <span className="font-medium">{p.stock}</span></p>
                                         </div>
                                     </div>
@@ -434,19 +397,13 @@ export default function CatalogPage() {
                                 <li key={item.id} className="flex items-center justify-between py-4">
                                     <div className="flex items-center space-x-3">
                                         <img src={item.imagenUrl || 'https://placehold.co/60x60?text=No+Image'} alt={item.nombre} className="w-16 h-16 object-cover rounded border border-gray-200" onError={e => { e.target.src = 'https://placehold.co/60x60?text=No+Image'; e.target.onerror = null; }} />
-                                        <div className="flex-1">
-                                            <p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p>
-                                            {/* CORREGIDO: Usar precio_normal y promocion para determinar el precio final */}
-                                            <p className="text-gray-600 text-sm">
-                                                {formatCurrency((item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal)}
-                                            </p>
-                                        </div>
+                                        <div className="flex-1"><p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p><p className="text-gray-600 text-sm">{formatCurrency(item.promocion !== null ? item.promocion : item.precio)}</p></div>
                                     </div>
                                     <div className="flex items-center space-x-2 ml-3">
-                                        <button onClick={() => decrementItem(item.id)} className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-30" disabled={item.qty <= 1} title="Disminuir cantidad" aria-label={`Disminuir cantidad de ${item.nombre}`}><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" /></svg></button>
+                                        <button onClick={() => decrementItem(item.id)} className="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-30" disabled={item.qty <= 1} title="Disminuir cantidad"><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" /></svg></button>
                                         <span className="font-semibold text-gray-800 w-5 text-center text-sm">{item.qty}</span>
-                                        <button onClick={() => addToCart(item)} className="p-1 text-green-600 hover:text-green-700 disabled:opacity-30" disabled={item.qty >= item.stock} title="Aumentar cantidad" aria-label={`Aumentar cantidad de ${item.nombre}`}><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg></button>
-                                        <button onClick={() => removeItem(item.id)} className="p-1 text-red-500 hover:text-red-700 ml-1" title="Eliminar ítem" aria-label={`Eliminar ${item.nombre} del carrito`}><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                        <button onClick={() => addToCart(item)} className="p-1 text-green-600 hover:text-green-700 disabled:opacity-30" disabled={item.qty >= item.stock} title="Aumentar cantidad"><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg></button>
+                                        <button onClick={() => removeItem(item.id)} className="p-1 text-red-500 hover:text-red-700 ml-1" title="Eliminar ítem"><svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                     </div>
                                 </li>))}
                             </ul>)}
