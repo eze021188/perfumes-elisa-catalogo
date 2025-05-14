@@ -476,14 +476,13 @@ export default function CatalogPage() {
                     <p className="text-xs text-gray-500 leading-relaxed">
                         Derechos de Reproducción © 2006-{new Date().getFullYear()} PerfumesElisa.com {/* Reemplaza con tu nombre de dominio/marca si es diferente */} – Todos los derechos reservados.
                         <br />
-                        No se permite copiar nada sin autorización previa por escrito.
-                        <br className="sm:hidden" />
-                        Favor de leer los&nbsp;
+                        No se permite copiar nada sin autorización previa por escrito. 
+                        <br className="sm:hidden" />  Favor de leer los&nbsp;
                         {/* Asegúrate de crear estas páginas y enlazar correctamente */}
                         <a href="/terminos-servicio" className="underline hover:text-gray-700">Términos del Servicio</a> y la&nbsp;
                         <a href="/politica-privacidad" className="underline hover:text-gray-700">Política de Privacidad</a>.
                         <br />
-                        Perfumes Elisa {/* Reemplaza con tu nombre comercial/legal si es diferente */}, Apodaca, N.L., México.
+                        Perfumes Elisa{/* Reemplaza con tu nombre comercial/legal si es diferente */}. Apodaca, N.L., México.
                     </p>
                 </div>
             </footer>
