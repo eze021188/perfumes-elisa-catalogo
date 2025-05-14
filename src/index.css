@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ahora puedes añadir tus estilos personalizados debajo de estas líneas si es necesario,
+   pero los estilos por defecto de Vite deben ser eliminados. */
