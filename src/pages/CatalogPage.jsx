@@ -168,7 +168,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                         </div>
 
                         <div className="flex flex-col">
-                            <h4 className="font-semibold text-gray-800 mb-1 text-md w-full text-center sm:text-left">Descripción:</h4>
                             {descripcion_html ? (
                                 <div className="w-full flex justify-center sm:justify-start">
                                     <div 
@@ -430,7 +429,7 @@ export default function CatalogPage() {
                                  <InstagramIcon /> @perfumeselisa
                              </a>
                               <a href="mailto:contacto@perfumeselisa.com" className="flex items-center text-gray-700 hover:text-black">
-                                 <EmailIcon /> contacto@perfumeselisa.com
+                                 <EmailIcon />  contacto@perfumeselisa.com
                              </a>
                               <p className="flex items-center text-gray-700"><LocationIcon /> Apodaca, N. L.</p>
                          </div>
