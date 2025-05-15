@@ -119,7 +119,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-labelledby="product-detail-modal-title" role="dialog" aria-modal="true">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                {/* Nombre del Producto Centrado */}
                 <div className="p-4 sm:p-5 border-b border-gray-200 flex justify-between items-center">
                     <h3 id="product-detail-modal-title" className="text-xl sm:text-2xl font-semibold text-gray-900 text-center flex-grow">{nombre}</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 ml-auto" aria-label="Cerrar detalle de producto">
@@ -127,13 +126,10 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                     </button>
                 </div>
 
-                {/* Contenido Principal del Modal */}
                 <div className="p-4 sm:p-6 overflow-y-auto">
-                    {/* Contenedor Grid para las dos columnas principales */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                        {/* Columna Izquierda: Imagen y debajo su info (precio, categoría, stock) */}
+                        {/* Columna Izquierda: Imagen y debajo su info */}
                         <div className="flex flex-col items-center sm:items-start">
-                            {/* Imagen del producto */}
                             <div className="mb-4 w-full flex justify-center sm:justify-start">
                                  <img 
                                     src={imagenUrl || 'https://placehold.co/400x300/e2e8f0/333?text=No+Imagen'} 
@@ -142,8 +138,7 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                                     onError={e => { e.target.src = 'https://placehold.co/400x300/e2e8f0/333?text=No+Imagen'; e.target.onerror = null; }}
                                 />
                             </div>
-                            {/* Información debajo de la imagen */}
-                            <div className="w-full mt-2">
+                            <div className="w-full mt-2 text-center sm:text-left">
                                 <div className="mb-3">
                                     {promocion !== null && promocion < precio_normal ? (
                                         <>
@@ -163,36 +158,40 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                             </div>
                         </div>
 
-                        {/* Columna Derecha: Descripción y Pirámide Olfativa */}
-                        <div className="flex flex-col">
+                        {/* Columna Derecha (en sm+) o Segundo Bloque (en móvil): Descripción y Pirámide Olfativa */}
+                        {/* MODIFICADO: Se aplica text-center a los hijos para móvil, y sm:text-left para desktop */}
+                        <div className="flex flex-col"> {/* Contenedor de la columna/bloque */}
+                            <h4 className="font-semibold text-gray-800 mb-1 text-md w-full text-center sm:text-left">Descripción:</h4>
                             {descripcion_html ? (
-                                <div 
-                                    className="prose prose-sm max-w-none text-gray-700 mb-4 min-h-[60px]"
-                                    dangerouslySetInnerHTML={{ __html: descripcion_html }} 
-                                />
+                                <div className="w-full flex justify-center sm:justify-start"> {/* Wrapper para centrar el bloque prose en móvil */}
+                                    <div 
+                                        className="prose prose-sm max-w-none text-gray-700 mb-4 min-h-[60px]" // Prose alinea su texto a la izquierda por defecto
+                                        dangerouslySetInnerHTML={{ __html: descripcion_html }} 
+                                    />
+                                </div>
                             ) : (
-                                <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap min-h-[60px]">
+                                <p className="text-gray-700 text-sm mb-4 whitespace-pre-wrap min-h-[60px] w-full text-center sm:text-left">
                                     {descripcion || "No hay descripción para este producto."}
                                 </p>
                             )}
 
                             {tienePiramide && (
-                                <div className="mt-4"> {/* Espacio si hay descripción arriba */}
-                                    <h4 className="font-semibold text-gray-800 mb-2 text-md">Pirámide Olfativa:</h4>
+                                <div className="mt-4 w-full"> {/* Contenedor de la pirámide */}
+                                    <h4 className="font-semibold text-gray-800 mb-2 text-md text-center sm:text-left">Pirámide Olfativa:</h4>
                                     {piramide_olfativa.salida && piramide_olfativa.salida.length > 0 && (
-                                        <div className="mb-3">
+                                        <div className="mb-3 text-center sm:text-left">
                                             <p className="text-sm font-medium text-gray-700">Notas de Salida:</p>
                                             <p className="text-sm text-gray-600">{piramide_olfativa.salida.join(', ')}</p>
                                         </div>
                                     )}
                                     {piramide_olfativa.corazon && piramide_olfativa.corazon.length > 0 && (
-                                        <div className="mb-3">
+                                        <div className="mb-3 text-center sm:text-left">
                                             <p className="text-sm font-medium text-gray-700">Notas de Corazón:</p>
                                             <p className="text-sm text-gray-600">{piramide_olfativa.corazon.join(', ')}</p>
                                         </div>
                                     )}
                                     {piramide_olfativa.fondo && piramide_olfativa.fondo.length > 0 && (
-                                        <div>
+                                        <div className="text-center sm:text-left">
                                             <p className="text-sm font-medium text-gray-700">Notas de Fondo:</p>
                                             <p className="text-sm text-gray-600">{piramide_olfativa.fondo.join(', ')}</p>
                                         </div>
@@ -203,7 +202,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                     </div>
                 </div>
                 
-                {/* Botón Añadir al Carrito */}
                 <div className="p-4 sm:p-6 border-t border-gray-200 mt-auto">
                     <button
                         onClick={() => onAddToCart(product)}
@@ -474,8 +472,7 @@ export default function CatalogPage() {
                                 return (
                                 <div key={p.id} onClick={() => handleProductClick(p)} className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200">
                                     {disc != null && (<span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">-{disc}%</span>)}
-                                    {/* Contenedor de imagen en Grid View MODIFICADO */}
-                                    <div className="w-full h-48 overflow-hidden bg-gray-100 flex items-center justify-center"> {/* Altura reducida a h-48 */}
+                                    <div className="w-full h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
                                         {p.imagenUrl ? (
                                             <img 
                                                 src={p.imagenUrl} 
@@ -497,7 +494,6 @@ export default function CatalogPage() {
                                         ) : (
                                         <p className="text-gray-700 font-bold text-lg mb-2">{formatCurrency(p.precio_normal)}</p>
                                         )}
-                                        {/* Stock y Botón "+" en la misma línea */}
                                         <div className="flex items-center justify-between mt-auto pt-2">
                                             <p className="text-sm text-gray-600">Stock: <span className="font-medium">{p.stock}</span></p>
                                             <button 
