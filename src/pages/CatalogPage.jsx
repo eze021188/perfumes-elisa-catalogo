@@ -434,13 +434,13 @@ export default function CatalogPage() {
                         <h3 className="font-semibold text-gray-700 mb-3 text-sm flex items-center"><TruckIcon /> OPCIONES DE ENTREGA</h3>
                         <div className="text-gray-600 text-xs space-y-2">
                              <p>Entregas personales en puntos establecidos. (Consulta ubicaciones)</p>
-                             <p>----------------------------------------------- </p>
+                             <p>------------------------------------ </p>
                              <p>Envíos locales en la Zona Metropolitana de MTY desde $80.</p>
-                             <p>----------------------------------------------- </p>
+                             <p>------------------------------------ </p>
                              <p>Envíos por Uber, Didi o cualquier otra plataforma que sugiera el cliente.</p>
-                             <p>----------------------------------------------- </p>
+                             <p>------------------------------------ </p>
                              <p>Envíos nacionales desde $139. (Sin seguro)</p>
-                             <p>----------------------------------------------- </p>
+                             <p>------------------------------------ </p>
                              <p>Retirar en domicilio.</p>
                          </div>
                     </div>
@@ -619,9 +619,6 @@ export default function CatalogPage() {
                     </p>
                 </div>
             </footer>
-
-            <FloatingActionButtons /> 
-
         </div>
     );
 }
