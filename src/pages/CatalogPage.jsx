@@ -161,7 +161,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                         {/* Columna Derecha (en sm+) o Segundo Bloque (en móvil): Descripción y Pirámide Olfativa */}
                         {/* MODIFICADO: Se aplica text-center a los hijos para móvil, y sm:text-left para desktop */}
                         <div className="flex flex-col"> {/* Contenedor de la columna/bloque */}
-                            <h4 className="font-semibold text-gray-800 mb-1 text-md w-full text-center sm:text-left">Descripción:</h4>
                             {descripcion_html ? (
                                 <div className="w-full flex justify-center sm:justify-start"> {/* Wrapper para centrar el bloque prose en móvil */}
                                     <div 
