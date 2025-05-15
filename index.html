@@ -1,13 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="es"> {/* Cambiado a español */}
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    
+    {/* Favicon principal usando tu JPG */}
+    <link rel="icon" type="image/jpeg" href="/imagen/PERFUMESELISAblack.jpg" />
+    
+    {/* Tamaños adicionales (opcional, pero bueno tenerlos). 
+        Los navegadores pueden usar el mismo JPG si no proporcionas tamaños específicos. 
+        Para JPGs, el atributo 'sizes' no es tan estándar como para PNGs, 
+        pero no hace daño incluirlo. */}
+    <link rel="icon" type="image/jpeg" sizes="32x32" href="/imagen/PERFUMESELISAblack.jpg" />
+    <link rel="icon" type="image/jpeg" sizes="16x16" href="/imagen/PERFUMESELISAblack.jpg" />
+    
+    {/* Icono para dispositivos Apple */}
+    <link rel="apple-touch-icon" href="/imagen/PERFUMESELISAblack.jpg" />
+
+    {/* Opcional: Si tienes un manifest para PWA y un color de tema */}
+    {/* <link rel="manifest" href="/site.webmanifest" /> */}
+    {/* <meta name="theme-color" content="#ffffff" /> */}
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    
+    {/* Título de la Ventana/Pestaña */}
+    <title>Perfumes Elisa Catálogo</title>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script> {/* Asegúrate que esta ruta a tu entry point de React/Vite sea correcta */}
   </body>
 </html>
