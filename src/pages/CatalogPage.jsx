@@ -117,8 +117,18 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                           (piramide_olfativa.fondo && piramide_olfativa.fondo.length > 0) );
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-labelledby="product-detail-modal-title" role="dialog" aria-modal="true">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        // MODIFICADO: Añadido onClick={onClose} al div del overlay
+        <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" // Añadido fondo semitransparente aquí también
+            onClick={onClose} // Cierra el modal si se hace clic en el fondo (overlay)
+            aria-labelledby="product-detail-modal-title" 
+            role="dialog" 
+            aria-modal="true"
+        >
+            <div 
+                className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" 
+                onClick={(e) => e.stopPropagation()} // Evita que el clic dentro del contenido cierre el modal
+            >
                 <div className="p-4 sm:p-5 border-b border-gray-200 flex justify-between items-center">
                     <h3 id="product-detail-modal-title" className="text-xl sm:text-2xl font-semibold text-gray-900 text-center flex-grow">{nombre}</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 ml-auto" aria-label="Cerrar detalle de producto">
@@ -128,7 +138,6 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
 
                 <div className="p-4 sm:p-6 overflow-y-auto">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                        {/* Columna Izquierda: Imagen y debajo su info */}
                         <div className="flex flex-col items-center sm:items-start">
                             <div className="mb-4 w-full flex justify-center sm:justify-start">
                                  <img 
@@ -158,13 +167,12 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                             </div>
                         </div>
 
-                        {/* Columna Derecha (en sm+) o Segundo Bloque (en móvil): Descripción y Pirámide Olfativa */}
-                        {/* MODIFICADO: Se aplica text-center a los hijos para móvil, y sm:text-left para desktop */}
-                        <div className="flex flex-col"> {/* Contenedor de la columna/bloque */}
+                        <div className="flex flex-col">
+                            <h4 className="font-semibold text-gray-800 mb-1 text-md w-full text-center sm:text-left">Descripción:</h4>
                             {descripcion_html ? (
-                                <div className="w-full flex justify-center sm:justify-start"> {/* Wrapper para centrar el bloque prose en móvil */}
+                                <div className="w-full flex justify-center sm:justify-start">
                                     <div 
-                                        className="prose prose-sm max-w-none text-gray-700 mb-4 min-h-[60px]" // Prose alinea su texto a la izquierda por defecto
+                                        className="prose prose-sm max-w-none text-gray-700 mb-4 min-h-[60px]"
                                         dangerouslySetInnerHTML={{ __html: descripcion_html }} 
                                     />
                                 </div>
@@ -175,7 +183,7 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                             )}
 
                             {tienePiramide && (
-                                <div className="mt-4 w-full"> {/* Contenedor de la pirámide */}
+                                <div className="mt-4 w-full">
                                     <h4 className="font-semibold text-gray-800 mb-2 text-md text-center sm:text-left">Pirámide Olfativa:</h4>
                                     {piramide_olfativa.salida && piramide_olfativa.salida.length > 0 && (
                                         <div className="mb-3 text-center sm:text-left">
