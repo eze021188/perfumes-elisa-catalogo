@@ -1,29 +1,48 @@
 // src/pages/CatalogPage.jsx
 import React, { useEffect, useState, useMemo } from 'react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../supabaseClient'; // Ajusta la ruta si es necesario
 import toast from 'react-hot-toast';
 
-// --- Íconos PNG ---
-const WhatsAppIcon = () => (
+// --- Iconos para Botones Flotantes ---
+const FloatingWhatsAppIcon = () => (
+    <img 
+        src="/images/floating-icons/whatsapp-moderno.png" // Asegúrate que esta ruta sea correcta en tu carpeta public
+        alt="WhatsApp" 
+        className="w-6 h-6 md:w-7 md:h-7"
+        onError={(e) => { e.target.style.display='none'; console.error("Error cargando icono flotante WhatsApp") }}
+    />
+);
+
+const FloatingMessengerIcon = () => (
+    <img 
+        src="/images/floating-icons/messenger-moderno.png" // Asegúrate que esta ruta sea correcta en tu carpeta public
+        alt="Messenger" 
+        className="w-6 h-6 md:w-7 md:h-7"
+        onError={(e) => { e.target.style.display='none'; console.error("Error cargando icono flotante Messenger") }}
+    />
+);
+
+
+// --- Componentes de la Página (Iconos de la sidebar, SearchBar, CategoryFilters, etc.) ---
+const WhatsAppIcon = () => ( // Icono para la sidebar
     <img src="/imagen/iconos/whatsapp-bn.jpg" alt="WhatsApp" className="h-5 w-5 mr-1.5" />
 );
-const FacebookIcon = () => (
+const FacebookIcon = () => ( // Icono para la sidebar
     <img src="/imagen/iconos/facebook-bn.jpg" alt="Facebook" className="h-5 w-5 mr-1.5" />
 );
-const InstagramIcon = () => (
+const InstagramIcon = () => ( // Icono para la sidebar
     <img src="/imagen/iconos/instagram-bn.jpg" alt="Instagram" className="h-5 w-5 mr-1.5" />
 );
-const EmailIcon = () => (
+const EmailIcon = () => (  // Icono para la sidebar
     <img src="/imagen/iconos/email-bn.jpg" alt="Correo Electrónico" className="h-4 w-4 mr-1.5" />
 );
-const LocationIcon = () => (
+const LocationIcon = () => ( // Icono para la sidebar
     <img src="/imagen/iconos/location-bn.jpg" alt="Ubicación" className="h-4 w-4 mr-1.5" />
 );
-const TruckIcon = () => (
+const TruckIcon = () => ( // Icono para la sidebar
     <img src="/imagen/iconos/truck-bn.jpg" alt="Entrega" className="h-5 w-5 mr-2" />
 );
 
-// --- Componentes auxiliares ---
 function SearchBar({ onSearch }) {
     return (
         <div className="flex items-center bg-white rounded-lg shadow px-4 py-2 w-full max-w-xs md:max-w-sm">
@@ -37,7 +56,7 @@ function SearchBar({ onSearch }) {
 
 function CategoryFilters({ categories, selected, onSelect }) {
     return (
-        <nav className="flex items-center space-x-2">
+        <nav className="flex items-center space-x-2"> 
             {categories.map(cat => (
                 <button key={cat} onClick={() => onSelect(cat)}
                     className={`px-3 py-1 rounded-full font-medium text-sm whitespace-nowrap ${selected === cat ? 'bg-black text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} shadow-sm transition-colors duration-200`}>
@@ -76,10 +95,8 @@ const formatCurrency = (amount) => {
      return numericAmount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 };
 
-// --- Componente Modal Detalle Producto ---
 function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
     if (!product) return null;
-
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-labelledby="product-detail-modal-title" role="dialog" aria-modal="true">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
@@ -90,11 +107,11 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
                     </button>
                 </div>
                 <div className="p-4 sm:p-6 overflow-y-auto grid sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="sm:order-1">
+                    <div className="sm:order-1 flex items-center justify-center"> {/* Centrado para la imagen del modal */}
                         <img 
                             src={product.imagenUrl || 'https://placehold.co/600x600?text=No+Image'} 
                             alt={product.nombre} 
-                            className="w-full h-auto object-contain rounded-md max-h-[300px] sm:max-h-[400px] border border-gray-200"
+                            className="max-w-full max-h-[300px] sm:max-h-[400px] object-contain rounded-md border border-gray-200" // object-contain
                             onError={e => { e.target.src = 'https://placehold.co/600x600?text=No+Image'; e.target.onerror = null; }}
                         />
                     </div>
@@ -142,7 +159,34 @@ function ProductDetailModal({ product, onClose, onAddToCart, formatCurrency }) {
     );
 }
 
-// --- Componente Principal ---
+function FloatingActionButtons() {
+    const whatsappNumber = "5218130804010"; 
+    const messengerId = "perfumeselisa"; 
+
+    return (
+        <div className="fixed bottom-5 right-5 z-50 flex flex-col space-y-3">
+            <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"
+                aria-label="Contactar por WhatsApp"
+            >
+                <FloatingWhatsAppIcon />
+            </a>
+            <a
+                href={`https://m.me/${messengerId}`} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center"
+                aria-label="Contactar por Messenger"
+            >
+                <FloatingMessengerIcon />
+            </a>
+        </div>
+    );
+}
+
 export default function CatalogPage() {
     const [productos, setProductos] = useState([]);
     const [filtered, setFiltered] = useState([]);
@@ -172,7 +216,7 @@ export default function CatalogPage() {
                          imagenUrl = publicUrlData?.publicUrl || '';
                     } else if (p.imagenUrl || p.imagen_url) { imagenUrl = p.imagenUrl || p.imagen_url; }
                     if (!imagenUrl || imagenUrl.includes('null')) {
-                        imagenUrl = 'https://placehold.co/400x400?text=No+Image';
+                        imagenUrl = 'https://placehold.co/400x400/e2e8f0/333?text=No+Imagen'; // Placeholder con colores
                     }
                      const precioNormalNumerico = parseFloat(p.precio_normal) || 0;
                      const promocionNumerica = parseFloat(p.promocion);
@@ -245,7 +289,7 @@ export default function CatalogPage() {
 
     const handleWhatsAppRequest = () => {
         if (cartItems.length === 0) { toast.error("El carrito está vacío."); return; }
-        const phoneNumber = '528130804010';
+        const phoneNumber = '5218130804010';
         let message = "¡Hola! Me gustaría solicitar los siguientes productos:\n\n";
         cartItems.forEach(item => {
             const finalPrice = (item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal;
@@ -294,7 +338,6 @@ export default function CatalogPage() {
              </header>
 
             <main className="pt-16 flex flex-1">
-                {/* SIDEBAR MODIFICADA PARA SER FIJA EN DESKTOP */}
                 <aside className={`
                     fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
                     transition-transform duration-300 ease-in-out 
@@ -310,7 +353,7 @@ export default function CatalogPage() {
                     <div className="mb-6 border-b border-gray-200 pb-4">
                         <h3 className="font-semibold text-gray-800 mb-2 text-sm">ENTRA EN CONTACTO</h3>
                         <div className="text-xs space-y-2">
-                             <a href="https://wa.me/528130804010" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-700 hover:text-black">
+                             <a href="https://wa.me/5218130804010" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-700 hover:text-black">
                                  <WhatsAppIcon /> +528130804010
                              </a>
                              <a href="https://www.facebook.com/perfumeselisa/" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-700 hover:text-black">
@@ -329,13 +372,16 @@ export default function CatalogPage() {
                         <h3 className="font-semibold text-gray-700 mb-3 text-sm flex items-center"><TruckIcon /> OPCIONES DE ENTREGA</h3>
                         <div className="text-gray-600 text-xs space-y-2">
                              <p>Entregas personales en puntos establecidos. (Consulta ubicaciones)</p>
+                             <p>------------------------------------</p>
                              <p>Envíos locales en la Zona Metropolitana de MTY desde $80.</p>
+                             <p>------------------------------------</p>
                              <p>Envíos por Uber, Didi o cualquier otra plataforma que sugiera el cliente.</p>
+                             <p>------------------------------------</p>
                              <p>Envíos nacionales desde $139. (Sin seguro)</p>
+                             <p>------------------------------------</p>
                              <p>Retirar en domicilio.</p>
                          </div>
                     </div>
-                    {/* Botón cerrar sidebar móvil, se quitó mt-16 innecesario */}
                     {isSidebarOpen && (
                         <button className="lg:hidden absolute top-4 right-4 p-2 bg-gray-200 text-gray-800 rounded-md" onClick={() => setIsSidebarOpen(false)} aria-label="Cerrar menú">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -366,9 +412,18 @@ export default function CatalogPage() {
                                 return (
                                 <div key={p.id} onClick={() => handleProductClick(p)} className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200">
                                     {disc != null && (<span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">-{disc}%</span>)}
-                                    <div className="w-full h-64 overflow-hidden bg-gray-100">
-                                        {p.imagenUrl ? (<img src={p.imagenUrl} alt={p.nombre} className="w-full h-full object-cover object-center" onError={e => { e.target.src = 'https://placehold.co/400x400?text=No+Image'; e.target.onerror = null; }} />) : 
-                                        (<div className="w-full h-full flex items-center justify-center text-gray-500 text-sm p-4">No Image</div>)}
+                                    {/* Contenedor de imagen en Grid View MODIFICADO */}
+                                    <div className="w-full h-64 overflow-hidden bg-gray-100 flex items-center justify-center">
+                                        {p.imagenUrl ? (
+                                            <img 
+                                                src={p.imagenUrl} 
+                                                alt={p.nombre} 
+                                                className="max-w-full max-h-full object-contain" // Usa object-contain para ver toda la imagen
+                                                onError={e => { e.target.src = 'https://placehold.co/400x400/e2e8f0/333?text=No+Imagen'; e.target.onerror = null; }} 
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm p-4">No Imagen</div>
+                                        )}
                                     </div>
                                     <div className="p-4 flex flex-col flex-grow">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{p.nombre}</h3>
@@ -393,7 +448,15 @@ export default function CatalogPage() {
                             {filtered.map(p => (
                                 <li key={p.id} onClick={() => handleProductClick(p)} className="bg-white p-4 rounded shadow flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow duration-200">
                                     <div className="flex items-center space-x-4 flex-1 min-w-0">
-                                        <img src={p.imagenUrl || 'https://placehold.co/80x80?text=No+Image'} alt={p.nombre} className="w-20 h-20 object-cover rounded flex-shrink-0" onError={e => { e.target.src = 'https://placehold.co/80x80?text=No+Image'; e.target.onerror = null; }} />
+                                        {/* Imagen en List View MODIFICADA */}
+                                        <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded flex items-center justify-center">
+                                            <img 
+                                                src={p.imagenUrl || 'https://placehold.co/80x80/e2e8f0/333?text=No+Imagen'} 
+                                                alt={p.nombre} 
+                                                className="max-w-full max-h-full object-contain rounded" // Usa object-contain
+                                                onError={e => { e.target.src = 'https://placehold.co/80x80/e2e8f0/333?text=No+Imagen'; e.target.onerror = null; }}
+                                            />
+                                        </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-semibold text-gray-900 truncate">{p.nombre}</h4>
                                             <div className="mt-1">
@@ -442,7 +505,7 @@ export default function CatalogPage() {
                             (<ul className="divide-y divide-gray-200 -my-4">{cartItems.map(item => (
                                 <li key={item.id} className="flex items-center justify-between py-4">
                                     <div className="flex items-center space-x-3">
-                                        <img src={item.imagenUrl || 'https://placehold.co/60x60?text=No+Image'} alt={item.nombre} className="w-16 h-16 object-cover rounded border border-gray-200" onError={e => { e.target.src = 'https://placehold.co/60x60?text=No+Image'; e.target.onerror = null; }} />
+                                        <img src={item.imagenUrl || 'https://placehold.co/60x60/e2e8f0/333?text=No+Imagen'} alt={item.nombre} className="w-16 h-16 object-contain rounded border border-gray-200" onError={e => { e.target.src = 'https://placehold.co/60x60/e2e8f0/333?text=No+Imagen'; e.target.onerror = null; }} />
                                         <div className="flex-1"><p className="font-medium text-sm text-gray-900 leading-tight">{item.nombre}</p><p className="text-gray-600 text-sm">{formatCurrency((item.promocion !== null && item.promocion < item.precio_normal) ? item.promocion : item.precio_normal)}</p></div>
                                     </div>
                                     <div className="flex items-center space-x-2 ml-3">
@@ -474,19 +537,18 @@ export default function CatalogPage() {
             <footer className="bg-white text-center p-4 sm:p-6 border-t border-gray-200">
                 <div className="max-w-3xl mx-auto">
                     <p className="text-xs text-gray-500 leading-relaxed">
-                        Derechos de Reproducción © 2006-{new Date().getFullYear()} PerfumesElisa.com {/* Reemplaza con tu nombre de dominio/marca si es diferente */} – Todos los derechos reservados.
+                        Derechos de Reproducción © 2006-{new Date().getFullYear()} PerfumesElisa.com
                         <br />
-                        No se permite copiar nada sin autorización previa por escrito. 
-                        <br className="sm:hidden" />  Favor de leer los&nbsp;
-                        {/* Asegúrate de crear estas páginas y enlazar correctamente */}
+                        No se permite copiar nada sin autorización previa por escrito.
+                        <br className="sm:hidden" />
+                        Favor de leer los&nbsp;
                         <a href="/terminos-servicio" className="underline hover:text-gray-700">Términos del Servicio</a> y la&nbsp;
                         <a href="/politica-privacidad" className="underline hover:text-gray-700">Política de Privacidad</a>.
                         <br />
-                        Perfumes Elisa{/* Reemplaza con tu nombre comercial/legal si es diferente */}. Apodaca, N.L., México.
+                        Perfumes Elisa, Apodaca, N.L., México.
                     </p>
                 </div>
             </footer>
-
         </div>
     );
 }
