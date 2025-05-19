@@ -74,7 +74,7 @@ export default function SearchFilters({
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-luxury-900">Mostrar productos agotados</span>
                 <button
-                  onClick={onToggleOutOfStock}
+                  onClick={() => onToggleOutOfStock(!showOutOfStock)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
                     showOutOfStock ? 'bg-accent' : 'bg-luxury-300'
                   }`}
