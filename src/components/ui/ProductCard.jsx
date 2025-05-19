@@ -33,8 +33,8 @@ export default function ProductCard({
       className="group bg-white rounded-2xl luxury-card-shadow aspect-square flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Imagen del producto - 70% del espacio */}
-      <div className="relative w-full h-[70%] bg-luxury-50 overflow-hidden">
+      {/* Imagen del producto - 65% del espacio */}
+      <div className="relative w-full h-[65%] bg-luxury-50 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -62,10 +62,10 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Información del producto - 30% del espacio */}
-      <div className="p-3 flex flex-col h-[30%]">
+      {/* Información del producto - 35% del espacio */}
+      <div className="p-3 flex flex-col h-[35%] justify-between">
         {/* Nombre del producto con tamaño reducido */}
-        <h3 className="font-display text-xs text-luxury-900 leading-tight line-clamp-1 mb-2">
+        <h3 className="font-display text-xs text-luxury-900 leading-tight line-clamp-2 mb-1">
           {nombre}
         </h3>
 
@@ -96,7 +96,7 @@ export default function ProductCard({
           disabled={stock <= 0}
           className="w-full bg-luxury-900 text-white py-1.5 text-xs font-medium rounded-xl
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   hover:bg-luxury-800 transition-colors mt-auto"
+                   hover:bg-luxury-800 transition-colors"
         >
           {stock > 0 ? t('addToCart') : t('notifyMe')}
         </button>
