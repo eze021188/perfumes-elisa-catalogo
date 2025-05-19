@@ -62,7 +62,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
                     {formatCurrency(product.precio_normal)}
                   </div>
                   
-                  {/* Precio promocional (si existe) */}
+                  {/* Precio promocional (si existe y es menor) */}
                   {product.promocion && product.promocion < product.precio_normal && (
                     <div className="text-2xl font-bold text-luxury-900">
                       {formatCurrency(product.promocion)}

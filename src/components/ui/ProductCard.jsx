@@ -78,7 +78,7 @@ export default function ProductCard({
               {formatCurrency(precio_normal)}
             </div>
             
-            {/* Precio promocional (si existe) */}
+            {/* Precio promocional (si existe y es menor) */}
             {promocion !== null && promocion < precio_normal && (
               <div className="text-base font-bold text-luxury-900">
                 {formatCurrency(promocion)}
