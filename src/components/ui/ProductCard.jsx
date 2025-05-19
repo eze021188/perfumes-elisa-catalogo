@@ -64,8 +64,8 @@ export default function ProductCard({
 
       {/* Información del producto - 40% del espacio */}
       <div className="p-4 flex flex-col h-[40%] justify-between bg-luxury-200">
-        {/* Nombre del producto */}
-        <h3 className="text-sm leading-tight line-clamp-2 mb-2 font-medium text-luxury-900">
+        {/* Nombre del producto - Actualizado para usar Arial */}
+        <h3 className="text-sm leading-tight line-clamp-2 mb-2 font-medium text-luxury-900 font-product">
           {nombre}
         </h3>
 
