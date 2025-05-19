@@ -60,10 +60,12 @@ export default function CatalogPage() {
   const normalizarCategoria = (categoria) => {
     if (!categoria) return '';
     
-    const cat = categoria.toUpperCase();
-    if (cat.includes('MASCULINA') || cat.includes('HOMBRE')) return 'FRAGANCIA MASCULINA';
-    if (cat.includes('FEMENINA') || cat.includes('MUJER')) return 'FRAGANCIA FEMENINA';
+    const cat = categoria.toUpperCase().trim();
+    
+    if (cat.includes('MASCULIN') || cat.includes('HOMBRE')) return 'FRAGANCIA MASCULINA';
+    if (cat.includes('FEMENIN') || cat.includes('MUJER')) return 'FRAGANCIA FEMENINA';
     if (cat.includes('UNISEX')) return 'UNISEX';
+    
     return categoria;
   };
 
