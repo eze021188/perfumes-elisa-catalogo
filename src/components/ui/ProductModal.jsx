@@ -22,7 +22,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-white w-full max-w-xl overflow-hidden relative"
+        className="bg-white w-full max-w-xl overflow-hidden relative rounded-2xl"
       >
         <div className="flex flex-col">
           {/* Header con título y botón cerrar */}
@@ -40,7 +40,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
 
           <div className="grid grid-cols-2 gap-6 p-6">
             {/* Imagen */}
-            <div className="bg-gray-50 p-4 flex items-center justify-center">
+            <div className="bg-gray-50 p-4 flex items-center justify-center rounded-xl">
               <img
                 src={product.imagen_url}
                 alt={product.nombre}
@@ -106,7 +106,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
             <button
               onClick={() => onAddToCart(product)}
               disabled={product.stock <= 0}
-              className="w-full bg-blue-600 text-white py-2 px-4 text-sm font-medium
+              className="w-full bg-blue-600 text-white py-2 px-4 text-sm font-medium rounded-full
                        disabled:opacity-50 disabled:cursor-not-allowed
                        hover:bg-blue-700 transition-colors"
             >

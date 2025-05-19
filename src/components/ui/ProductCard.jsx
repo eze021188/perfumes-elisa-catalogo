@@ -30,13 +30,13 @@ export default function ProductCard({
       exit={{ opacity: 0, y: 20 }}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group bg-white luxury-card-shadow flex flex-col cursor-pointer overflow-hidden"
+      className="group bg-white rounded-2xl luxury-card-shadow flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
       {/* Etiqueta de descuento */}
       {discount && (
         <div className="absolute top-4 left-4 z-10">
-          <div className="bg-luxury-900 text-white px-4 py-1.5 text-xs tracking-wider font-medium">
+          <div className="bg-luxury-900 text-white px-4 py-1.5 text-xs tracking-wider font-medium rounded-full">
             {discount}% OFF
           </div>
         </div>
@@ -44,7 +44,7 @@ export default function ProductCard({
 
       {/* Categoría */}
       <div className="absolute top-4 right-4 z-10">
-        <div className="bg-white/90 backdrop-blur-sm text-luxury-900 px-3 py-1 text-xs tracking-wider font-medium">
+        <div className="bg-white/90 backdrop-blur-sm text-luxury-900 px-3 py-1 text-xs tracking-wider font-medium rounded-full">
           {categoria}
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function ProductCard({
 
       {/* Información del producto */}
       <div className="p-6 flex flex-col gap-4 flex-grow">
-        <h3 className="font-display text-xl text-luxury-900 leading-snug">
+        <h3 className="font-display text-xl text-luxury-900 leading-snug line-clamp-2">
           {nombre}
         </h3>
 
@@ -104,7 +104,7 @@ export default function ProductCard({
               onAddToCart(product);
             }}
             disabled={stock <= 0}
-            className="btn-luxury disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-luxury rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {stock > 0 ? t('addToCart') : t('notifyMe')}
           </motion.button>
