@@ -7,9 +7,8 @@ import ProductCard from '../components/ui/ProductCard';
 import ProductModal from '../components/ui/ProductModal';
 import CartModal from '../components/ui/CartModal';
 
-// ... (resto del código sin cambios hasta el return)
-
-return (
+function CatalogPage() {
+  return (
     <>
       <Header
         categories={categorias}
@@ -47,8 +46,8 @@ return (
           )}
         </AnimatePresence>
       </main>
-
-      {/* ... (resto del código sin cambios) */}
     </>
   );
 }
+
+export default CatalogPage;
