@@ -11,7 +11,7 @@ export default function ProductCard({
   const { t } = useTranslation();
   const {
     nombre,
-    imagenUrl,
+    imagen_url,
     precio_normal,
     promocion,
     stock,
@@ -49,10 +49,10 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Imagen con efecto hover */}
+      {/* Image container */}
       <div className="relative aspect-square bg-luxury-50 overflow-hidden">
         <img
-          src={imagenUrl || 'https://placehold.co/400x400/f8f7f4/433d36?text=Imagen+no+disponible'}
+          src={imagen_url}
           alt={nombre}
           className="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-700 ease-out group-hover:scale-110"
           onError={(e) => {

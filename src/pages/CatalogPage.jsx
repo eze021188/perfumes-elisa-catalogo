@@ -28,13 +28,17 @@ export default function CatalogPage() {
         
         if (error) throw error;
 
-        const productsWithCorrectData = data.map(p => ({
-          ...p,
-          imagen_url: p.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen',
-          stock: parseFloat(p.stock) || 0,
-          precio_normal: parseFloat(p.precio_normal) || 0,
-          promocion: parseFloat(p.promocion) || null
-        }));
+        const productsWithCorrectData = data.map(p => {
+          const imagen_url = p.imagen_url || p.imagenUrl || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen';
+          
+          return {
+            ...p,
+            imagen_url,
+            stock: parseFloat(p.stock) || 0,
+            precio_normal: parseFloat(p.precio_normal) || 0,
+            promocion: parseFloat(p.promocion) || null
+          };
+        });
 
         setProductos(productsWithCorrectData);
         setFiltered(productsWithCorrectData);
