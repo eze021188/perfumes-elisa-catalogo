@@ -55,9 +55,21 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
             {/* Contenido */}
             <div className="flex flex-col h-[280px] overflow-y-auto">
               <div className="mb-4">
-                <div className="text-2xl font-product font-bold text-luxury-900">
-                  {formatCurrency(product.promocion && product.promocion < product.precio_normal ? product.promocion : product.precio_normal)}
+                {/* Precios */}
+                <div className="flex items-center gap-3 mb-2">
+                  {/* Precio promocional */}
+                  <span className="text-2xl font-product font-bold text-luxury-900">
+                    {formatCurrency(product.promocion && product.promocion < product.precio_normal ? product.promocion : product.precio_normal)}
+                  </span>
+                  
+                  {/* Precio normal tachado en rojo */}
+                  {product.promocion && product.promocion < product.precio_normal && (
+                    <span className="text-red-600 line-through text-lg font-product">
+                      {formatCurrency(product.precio_normal)}
+                    </span>
+                  )}
                 </div>
+                
                 <div className="text-sm font-product text-gray-600">
                   Categoría: {product.categoria}
                 </div>

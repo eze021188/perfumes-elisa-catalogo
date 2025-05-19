@@ -64,23 +64,26 @@ export default function ProductCard({
 
       {/* Información del producto - 40% del espacio */}
       <div className="p-4 flex flex-col h-[40%] justify-between bg-luxury-200">
-        {/* Nombre del producto con Segoe UI Bold */}
+        {/* Nombre del producto con Segoe UI */}
         <h3 className="font-product text-sm leading-tight line-clamp-2 mb-2 font-bold text-luxury-900">
           {nombre}
         </h3>
 
         {/* Precios y stock */}
         <div className="flex flex-col gap-1 mb-2">
-          {/* Mostrar precio promocional primero si existe */}
-          {promocion !== null && promocion < precio_normal && (
-            <div className="text-red-600 font-bold text-base">
-              {formatCurrency(promocion)}
-            </div>
-          )}
-          
-          {/* Precio normal */}
-          <div className={`text-sm ${promocion !== null && promocion < precio_normal ? 'text-gray-500 line-through' : 'text-luxury-900 font-semibold'}`}>
-            {formatCurrency(precio_normal)}
+          {/* Precios en línea cuando hay promoción */}
+          <div className="flex items-center gap-2">
+            {/* Precio promocional */}
+            <span className="text-base font-bold text-luxury-900">
+              {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
+            </span>
+            
+            {/* Precio normal tachado en rojo */}
+            {promocion !== null && promocion < precio_normal && (
+              <span className="text-red-600 line-through text-sm">
+                {formatCurrency(precio_normal)}
+              </span>
+            )}
           </div>
           
           {/* Stock */}
