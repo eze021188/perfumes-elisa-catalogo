@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:e2e": "cypress open",
-    "test:a11y": "pa11y-ci"
+    "test:a11y": "pa11y-ci",
+    "deploy": "git add . && git commit -m 'Update site' && git push origin main"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
