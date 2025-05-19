@@ -21,6 +21,7 @@ function CatalogPage() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [filtered, setFiltered] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [showOutOfStock, setShowOutOfStock] = useState(false);
 
   // Fetch products from Supabase
   useEffect(() => {
@@ -62,6 +63,11 @@ function CatalogPage() {
   useEffect(() => {
     let result = products;
     
+    // Filtro por stock
+    if (!showOutOfStock) {
+      result = result.filter(p => p.stock > 0);
+    }
+    
     // Filtro por categoría
     if (selectedCat !== 'INICIO') {
       result = result.filter(p => p.categoria === selectedCat);
@@ -89,7 +95,7 @@ function CatalogPage() {
     }
     
     setFiltered(result);
-  }, [selectedCat, searchTerm, priceRange, selectedBrand, products]);
+  }, [selectedCat, searchTerm, priceRange, selectedBrand, products, showOutOfStock]);
 
   // Handle window resize
   useEffect(() => {
@@ -152,6 +158,8 @@ function CatalogPage() {
         onCartClick={() => setIsCartOpen(true)}
         isMobile={isMobile}
         brands={brands}
+        showOutOfStock={showOutOfStock}
+        onToggleOutOfStock={() => setShowOutOfStock(!showOutOfStock)}
       />
 
       <main className="max-w-8xl mx-auto px-4 sm:px-6 pt-32 pb-20">

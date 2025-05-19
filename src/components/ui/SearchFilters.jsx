@@ -5,6 +5,8 @@ export default function SearchFilters({
   onSearch,
   onPriceRangeChange,
   onBrandChange,
+  onToggleOutOfStock,
+  showOutOfStock = false,
   minPrice = 0,
   maxPrice = 5000,
   brands = []
@@ -68,6 +70,23 @@ export default function SearchFilters({
             className="mt-2 p-4 bg-white border border-luxury-200 rounded-lg shadow-lg"
           >
             <div className="space-y-4">
+              {/* Toggle para mostrar productos agotados */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-luxury-900">Mostrar productos agotados</span>
+                <button
+                  onClick={onToggleOutOfStock}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
+                    showOutOfStock ? 'bg-accent' : 'bg-luxury-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      showOutOfStock ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
               {/* Rango de precios */}
               <div>
                 <h3 className="text-sm font-medium text-luxury-900 mb-2">Rango de precios</h3>
