@@ -30,11 +30,11 @@ export default function ProductCard({
       exit={{ opacity: 0, y: 20 }}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group bg-white rounded-2xl luxury-card-shadow aspect-[4/5] flex flex-col cursor-pointer overflow-hidden"
+      className="group bg-white rounded-2xl luxury-card-shadow aspect-[3/4] flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Imagen del producto - 65% del espacio */}
-      <div className="relative w-full h-[65%] bg-luxury-50 overflow-hidden">
+      {/* Imagen del producto - 60% del espacio */}
+      <div className="relative w-full h-[60%] bg-luxury-50 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -62,17 +62,15 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Información del producto - 35% del espacio */}
-      <div className="p-4 flex flex-col h-[35%] justify-between bg-white">
-        {/* Nombre del producto con mejor visibilidad */}
-        <div className="mb-2">
-          <h3 className="font-medium text-sm text-luxury-900 leading-tight line-clamp-2 hover:text-accent transition-colors">
-            {nombre}
-          </h3>
-        </div>
+      {/* Información del producto - 40% del espacio */}
+      <div className="p-3 flex flex-col h-[40%] justify-between bg-white">
+        {/* Nombre del producto */}
+        <h3 className="text-sm text-luxury-900 leading-tight line-clamp-2 mb-2 font-medium">
+          {nombre}
+        </h3>
 
-        {/* Contenedor de precio y stock */}
-        <div className="flex justify-between items-center mb-3">
+        {/* Precio y stock */}
+        <div className="flex justify-between items-center mb-2">
           <div className="flex flex-col">
             {promocion !== null && promocion < precio_normal && (
               <span className="text-luxury-400 line-through text-xs">
@@ -96,7 +94,7 @@ export default function ProductCard({
             onAddToCart(product);
           }}
           disabled={stock <= 0}
-          className="w-full bg-luxury-900 text-white py-2 text-xs font-medium rounded-xl
+          className="w-full bg-luxury-900 text-white py-1.5 text-xs font-medium rounded-xl
                    disabled:opacity-50 disabled:cursor-not-allowed
                    hover:bg-luxury-800 transition-colors"
         >
