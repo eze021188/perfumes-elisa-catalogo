@@ -29,7 +29,8 @@
     "react-i18next": "^14.1.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.22.2",
-    "react-share": "^5.1.0"
+    "react-share": "^5.1.0",
+    "sonner": "^1.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
