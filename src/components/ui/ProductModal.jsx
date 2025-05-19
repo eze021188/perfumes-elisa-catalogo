@@ -27,7 +27,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
         <div className="flex flex-col">
           {/* Header con título y botón cerrar */}
           <div className="p-4 flex justify-between items-center border-b border-gray-100">
-            <h2 className="text-xl font-product font-bold">{product.nombre}</h2>
+            <h2 className="text-xl font-product font-bold text-luxury-900">{product.nombre}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
@@ -55,45 +55,45 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
             {/* Contenido */}
             <div className="flex flex-col h-[280px] overflow-y-auto">
               <div className="mb-4">
-                <div className="text-2xl font-medium mb-2">
+                <div className="text-2xl font-product font-bold text-luxury-900">
                   {formatCurrency(product.promocion && product.promocion < product.precio_normal ? product.promocion : product.precio_normal)}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm font-product text-gray-600">
                   Categoría: {product.categoria}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm font-product text-gray-600">
                   Disponibles: {product.stock}
                 </div>
               </div>
 
               {product.descripcion_html ? (
                 <div 
-                  className="prose prose-sm max-w-none mb-4"
+                  className="prose prose-sm max-w-none mb-4 font-product"
                   dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
                 />
               ) : (
-                <p className="text-gray-600 mb-4 text-sm">{product.descripcion}</p>
+                <p className="text-gray-600 mb-4 text-sm font-product">{product.descripcion}</p>
               )}
 
               {product.piramide_olfativa && (
                 <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-gray-900">Pirámide Olfativa</h3>
+                  <h3 className="text-sm font-product font-bold text-gray-900">Pirámide Olfativa</h3>
                   {product.piramide_olfativa.salida?.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-gray-500">Notas de Salida</p>
-                      <p className="text-sm">{product.piramide_olfativa.salida.join(', ')}</p>
+                      <p className="text-xs font-product font-bold text-gray-500">Notas de Salida</p>
+                      <p className="text-sm font-product">{product.piramide_olfativa.salida.join(', ')}</p>
                     </div>
                   )}
                   {product.piramide_olfativa.corazon?.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-gray-500">Notas de Corazón</p>
-                      <p className="text-sm">{product.piramide_olfativa.corazon.join(', ')}</p>
+                      <p className="text-xs font-product font-bold text-gray-500">Notas de Corazón</p>
+                      <p className="text-sm font-product">{product.piramide_olfativa.corazon.join(', ')}</p>
                     </div>
                   )}
                   {product.piramide_olfativa.fondo?.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-gray-500">Notas de Fondo</p>
-                      <p className="text-sm">{product.piramide_olfativa.fondo.join(', ')}</p>
+                      <p className="text-xs font-product font-bold text-gray-500">Notas de Fondo</p>
+                      <p className="text-sm font-product">{product.piramide_olfativa.fondo.join(', ')}</p>
                     </div>
                   )}
                 </div>
@@ -106,7 +106,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
             <button
               onClick={() => onAddToCart(product)}
               disabled={product.stock <= 0}
-              className="w-full bg-blue-600 text-white py-2 px-4 text-sm font-medium rounded-full
+              className="w-full bg-blue-600 text-white py-2 px-4 text-sm font-product font-bold rounded-full
                        disabled:opacity-50 disabled:cursor-not-allowed
                        hover:bg-blue-700 transition-colors"
             >
