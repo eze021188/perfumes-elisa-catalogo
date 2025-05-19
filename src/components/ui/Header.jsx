@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import SearchFilters from './SearchFilters';
@@ -21,6 +21,14 @@ export default function Header({
   onToggleOutOfStock
 }) {
   const { t } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (onViewModeChange) {
+      onViewModeChange(isMenuOpen ? 'grid' : 'list');
+    }
+  };
 
   return (
     <motion.header
@@ -98,8 +106,9 @@ export default function Header({
             {/* Menú móvil */}
             {isMobile && (
               <button
-                onClick={onMenuClick}
+                onClick={handleMenuClick}
                 className="lg:hidden p-2 text-luxury-900 hover:text-accent transition-colors"
+                aria-label="Toggle menu"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />

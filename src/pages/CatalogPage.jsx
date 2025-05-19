@@ -23,6 +23,7 @@ function CatalogPage() {
   const [filtered, setFiltered] = useState([]);
   const [brands, setBrands] = useState([]);
   const [showOutOfStock, setShowOutOfStock] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
 
   useEffect(() => {
     async function fetchProducts() {
@@ -154,6 +155,8 @@ function CatalogPage() {
         brands={brands}
         showOutOfStock={showOutOfStock}
         onToggleOutOfStock={setShowOutOfStock}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
 
       <main className="max-w-8xl mx-auto px-4 sm:px-6 pt-32 pb-20">
@@ -168,7 +171,11 @@ function CatalogPage() {
               <p className="text-luxury-500">No se encontraron productos</p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className={`${
+              viewMode === 'list' 
+                ? 'flex flex-col gap-4'
+                : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'
+            }`}>
               {filtered.map(product => (
                 <ProductCard
                   key={product.id}
@@ -176,6 +183,7 @@ function CatalogPage() {
                   onProductClick={() => setSelectedProduct(product)}
                   onAddToCart={addToCart}
                   formatCurrency={formatCurrency}
+                  viewMode={viewMode}
                 />
               ))}
             </div>
