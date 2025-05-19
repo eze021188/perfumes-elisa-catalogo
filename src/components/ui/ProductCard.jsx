@@ -34,11 +34,11 @@ export default function ProductCard({
       onClick={() => onProductClick(product)}
     >
       {/* Imagen del producto */}
-      <div className="relative w-full aspect-square bg-luxury-50 overflow-hidden">
+      <div className="relative w-full h-[65%] bg-luxury-50 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
-          className="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-700 ease-out group-hover:scale-110"
+          className="absolute inset-0 w-full h-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-110"
           onError={(e) => {
             e.target.src = 'https://placehold.co/400x400/f8f7f4/433d36?text=Imagen+no+disponible';
             e.target.onerror = null;
