@@ -26,6 +26,11 @@ export default function PreguntasFraganciasPage() {
             </section>
 
             <section>
+              <h2 className="text-2xl font-display text-luxury-800 mb-4">¿Por qué los precios de los perfumes son más baratos en comparación con los de los grandes minoristas?</h2>
+              <p className="text-luxury-700">Creemos que las fragancias son una necesidad para todos. Todos queremos oler bien. El problema es que en las grandes superficies los precios de los perfumes son muy altos. Para solucionar este problema, empezamos a comprar productos directamente a fabricantes o distribuidores autorizados al por mayor, lo que nos ayudó a mantener los precios bajos. Además, no tenemos los gastos de una gran superficie, así que trasladamos el ahorro a nuestros clientes.</p>
+            </section>
+
+            <section>
               <h2 className="text-2xl font-display text-luxury-800 mb-4">¿Cuál es la diferencia entre Eau de Parfum, Eau de Toilette y Eau de Colonia?</h2>
               <p className="text-luxury-700 mb-4">Estos términos dan una idea sobre la fuerza de la fragancia. La regla es que cuanto mayor sea el porcentaje de aceites esenciales, más durará la fragancia y menos necesitará aplicar.</p>
               <ul className="list-disc pl-6 space-y-2 text-luxury-700">
