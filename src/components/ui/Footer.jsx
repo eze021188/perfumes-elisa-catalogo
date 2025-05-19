@@ -7,7 +7,7 @@ export default function Footer() {
         {/* Columna 1: Información de la empresa */}
         <div className="space-y-4">
           <img 
-            src="/imagen/PERFUMESELISAwhite.jpg" 
+            src="/imagen/PERFUMESELISA.png" 
             alt="Perfumes Elisa" 
             className="h-16 object-contain"
           />
