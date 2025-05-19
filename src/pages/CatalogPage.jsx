@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { supabase } from '../supabaseClient';
+import { supabase, checkSupabaseConnection } from '../supabaseClient';
 import Header from '../components/ui/Header';
 import ProductCard from '../components/ui/ProductCard';
 import ProductModal from '../components/ui/ProductModal';
@@ -24,16 +24,32 @@ function CatalogPage() {
   const [brands, setBrands] = useState([]);
   const [showOutOfStock, setShowOutOfStock] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
+  const [connectionError, setConnectionError] = useState(false);
 
   useEffect(() => {
     async function fetchProducts() {
       try {
         setLoading(true);
+        setConnectionError(false);
+
+        // Check connection first
+        const isConnected = await checkSupabaseConnection();
+        if (!isConnected) {
+          throw new Error('No se pudo conectar con la base de datos. Por favor, verifica tu conexión a internet.');
+        }
+
         const { data, error } = await supabase
           .from('productos')
           .select('*');
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw new Error('Error al obtener los productos: ' + error.message);
+        }
+
+        if (!data) {
+          throw new Error('No se recibieron datos de la base de datos');
+        }
 
         const processedProducts = data.map(product => ({
           ...product,
@@ -50,7 +66,8 @@ function CatalogPage() {
         setFiltered(processedProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
-        toast.error('Error al cargar los productos');
+        setConnectionError(true);
+        toast.error(error.message || 'Error al cargar los productos. Por favor, intenta de nuevo más tarde.');
       } finally {
         setLoading(false);
       }
@@ -136,6 +153,23 @@ function CatalogPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-luxury-900"></div>
+      </div>
+    );
+  }
+
+  if (connectionError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <h2 className="text-2xl font-semibold text-red-600 mb-4">Error de Conexión</h2>
+        <p className="text-gray-600 text-center mb-4">
+          No se pudo establecer conexión con la base de datos. Por favor, verifica tu conexión a internet y recarga la página.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-luxury-900 text-white rounded hover:bg-luxury-800 transition-colors"
+        >
+          Reintentar
+        </button>
       </div>
     );
   }
