@@ -33,8 +33,8 @@ export default function ProductCard({
       className="group bg-white rounded-2xl luxury-card-shadow aspect-square flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Imagen del producto - 75% del espacio */}
-      <div className="relative w-full h-[75%] bg-luxury-50 overflow-hidden">
+      {/* Imagen del producto - 70% del espacio */}
+      <div className="relative w-full h-[70%] bg-luxury-50 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -62,10 +62,10 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Información del producto - 25% del espacio */}
-      <div className="p-3 flex flex-col h-[25%]">
+      {/* Información del producto - 30% del espacio */}
+      <div className="p-3 flex flex-col h-[30%]">
         {/* Nombre del producto con tamaño reducido */}
-        <h3 className="font-display text-sm text-luxury-900 leading-tight line-clamp-1 mb-2">
+        <h3 className="font-display text-xs text-luxury-900 leading-tight line-clamp-1 mb-2">
           {nombre}
         </h3>
 
