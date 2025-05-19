@@ -13,11 +13,14 @@ function CatalogPage() {
   const [categorias] = useState(['INICIO', 'FRAGANCIA FEMENINA', 'FRAGANCIA MASCULINA', 'UNISEX']);
   const [selectedCat, setSelectedCat] = useState('INICIO');
   const [searchTerm, setSearchTerm] = useState('');
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 });
+  const [selectedBrand, setSelectedBrand] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [filtered, setFiltered] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   // Fetch products from Supabase
   useEffect(() => {
@@ -38,6 +41,10 @@ function CatalogPage() {
           stock: parseInt(product.stock) || 0
         }));
 
+        // Extraer marcas únicas
+        const uniqueBrands = [...new Set(processedProducts.map(p => p.marca).filter(Boolean))];
+        setBrands(uniqueBrands.sort());
+
         setProducts(processedProducts);
         setFiltered(processedProducts);
       } catch (error) {
@@ -51,14 +58,16 @@ function CatalogPage() {
     fetchProducts();
   }, []);
 
-  // Filter products based on category and search term
+  // Filter products based on all criteria
   useEffect(() => {
     let result = products;
     
+    // Filtro por categoría
     if (selectedCat !== 'INICIO') {
       result = result.filter(p => p.categoria === selectedCat);
     }
     
+    // Filtro por término de búsqueda
     if (searchTerm) {
       const search = searchTerm.toLowerCase();
       result = result.filter(p => 
@@ -67,9 +76,20 @@ function CatalogPage() {
         p.categoria.toLowerCase().includes(search)
       );
     }
+
+    // Filtro por rango de precios
+    result = result.filter(p => {
+      const precio = p.promocion && p.promocion < p.precio_normal ? p.promocion : p.precio_normal;
+      return precio >= priceRange.min && precio <= priceRange.max;
+    });
+
+    // Filtro por marca
+    if (selectedBrand) {
+      result = result.filter(p => p.marca === selectedBrand);
+    }
     
     setFiltered(result);
-  }, [selectedCat, searchTerm, products]);
+  }, [selectedCat, searchTerm, priceRange, selectedBrand, products]);
 
   // Handle window resize
   useEffect(() => {
@@ -126,9 +146,12 @@ function CatalogPage() {
         selectedCategory={selectedCat}
         onCategorySelect={setSelectedCat}
         onSearch={setSearchTerm}
+        onPriceRangeChange={setPriceRange}
+        onBrandChange={setSelectedBrand}
         cartItemsCount={cartItems.reduce((sum, item) => sum + item.qty, 0)}
         onCartClick={() => setIsCartOpen(true)}
         isMobile={isMobile}
+        brands={brands}
       />
 
       <main className="max-w-8xl mx-auto px-4 sm:px-6 pt-32 pb-20">

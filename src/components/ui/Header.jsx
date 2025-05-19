@@ -1,9 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import SearchFilters from './SearchFilters';
 
 export default function Header({
   onSearch,
+  onPriceRangeChange,
+  onBrandChange,
   categories,
   selectedCategory,
   onCategorySelect,
@@ -12,7 +15,8 @@ export default function Header({
   viewMode,
   onViewModeChange,
   onMenuClick,
-  isMobile
+  isMobile,
+  brands = []
 }) {
   const { t } = useTranslation();
 
@@ -44,21 +48,14 @@ export default function Header({
             />
           </div>
 
-          {/* Búsqueda */}
-          <div className="flex-grow max-w-xl">
-            <div className="relative">
-              <input
-                type="search"
-                placeholder={t('search')}
-                onChange={(e) => onSearch(e.target.value)}
-                className="input-luxury w-full"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-luxury-400">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </span>
-            </div>
+          {/* Búsqueda con filtros */}
+          <div className="flex-grow">
+            <SearchFilters
+              onSearch={onSearch}
+              onPriceRangeChange={onPriceRangeChange}
+              onBrandChange={onBrandChange}
+              brands={brands}
+            />
           </div>
 
           {/* Acciones */}
