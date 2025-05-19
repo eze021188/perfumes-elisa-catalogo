@@ -2,5 +2,8 @@
   "dependencies": {
     "@fontsource/playfair-display": "^5.0.17",
     "@fontsource/montserrat": "^5.0.15"
+  },
+  "scripts": {
+    "dev": "vite"
   }
 }
