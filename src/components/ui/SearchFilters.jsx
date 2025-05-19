@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Slider } from "@material-tailwind/react";
 
 export default function SearchFilters({
   onSearch,
@@ -20,8 +21,8 @@ export default function SearchFilters({
     onSearch(value);
   };
 
-  const handlePriceChange = (type, value) => {
-    const newRange = { ...priceRange, [type]: value };
+  const handlePriceChange = (value) => {
+    const newRange = { min: value[0], max: value[1] };
     setPriceRange(newRange);
     onPriceRangeChange(newRange);
   };
@@ -68,31 +69,25 @@ export default function SearchFilters({
             className="mt-2 p-4 bg-white border border-luxury-200 rounded-lg shadow-lg"
           >
             <div className="space-y-4">
-              {/* Rango de precios */}
+              {/* Rango de precios con slider */}
               <div>
                 <h3 className="text-sm font-medium text-luxury-900 mb-2">Rango de precios</h3>
-                <div className="flex items-center space-x-4">
-                  <div className="flex-1">
-                    <label className="text-xs text-luxury-500 mb-1 block">Mínimo</label>
-                    <input
-                      type="number"
-                      min={minPrice}
-                      max={priceRange.max}
-                      value={priceRange.min}
-                      onChange={(e) => handlePriceChange('min', Number(e.target.value))}
-                      className="w-full px-3 py-2 text-sm border border-luxury-200 rounded focus:outline-none focus:border-accent"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-xs text-luxury-500 mb-1 block">Máximo</label>
-                    <input
-                      type="number"
-                      min={priceRange.min}
-                      max={maxPrice}
-                      value={priceRange.max}
-                      onChange={(e) => handlePriceChange('max', Number(e.target.value))}
-                      className="w-full px-3 py-2 text-sm border border-luxury-200 rounded focus:outline-none focus:border-accent"
-                    />
+                <div className="px-2">
+                  <Slider
+                    value={[priceRange.min, priceRange.max]}
+                    onChange={handlePriceChange}
+                    min={minPrice}
+                    max={maxPrice}
+                    step={100}
+                    className="h-1.5"
+                  />
+                  <div className="flex justify-between mt-2">
+                    <span className="text-xs text-luxury-500">
+                      ${priceRange.min.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-luxury-500">
+                      ${priceRange.max.toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>

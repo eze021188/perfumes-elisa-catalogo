@@ -13,6 +13,8 @@
     "test:a11y": "pa11y-ci"
   },
   "dependencies": {
+    "@fontsource/montserrat": "^5.0.8",
+    "@fontsource/playfair-display": "^5.0.8",
     "@headlessui/react": "^1.7.18",
     "@sentry/react": "^7.107.0",
     "@supabase/supabase-js": "^2.39.7",
@@ -31,8 +33,7 @@
     "react-router-dom": "^6.22.2",
     "react-share": "^5.1.0",
     "sonner": "^1.4.3",
-    "@fontsource/playfair-display": "^5.0.8",
-    "@fontsource/montserrat": "^5.0.8"
+    "@material-tailwind/react": "^2.1.9"
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
