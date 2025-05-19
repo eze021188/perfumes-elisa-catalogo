@@ -49,7 +49,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Columna 4: Información */}
+        {/* Columna 4: Información y Redes Sociales */}
         <div>
           <h3 className="text-lg font-display mb-4">Información</h3>
           <ul className="space-y-2 text-sm text-luxury-200">
@@ -64,6 +64,49 @@ export default function Footer() {
               </Link>
             </li>
           </ul>
+
+          {/* Redes Sociales */}
+          <div className="mt-6">
+            <h3 className="text-lg font-display mb-4">Síguenos</h3>
+            <div className="flex space-x-4">
+              <a
+                href="https://www.facebook.com/PerfumesElisa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-luxury-200 hover:text-white transition-colors"
+              >
+                <img
+                  src="/imagen/iconos/facebook-bn.jpg"
+                  alt="Facebook"
+                  className="w-6 h-6"
+                />
+              </a>
+              <a
+                href="https://www.instagram.com/perfumes.elisa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-luxury-200 hover:text-white transition-colors"
+              >
+                <img
+                  src="/imagen/iconos/instagram-bn.jpg"
+                  alt="Instagram"
+                  className="w-6 h-6"
+                />
+              </a>
+              <a
+                href="https://wa.me/528130804010"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-luxury-200 hover:text-white transition-colors"
+              >
+                <img
+                  src="/imagen/iconos/whatsapp-bn.jpg"
+                  alt="WhatsApp"
+                  className="w-6 h-6"
+                />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
