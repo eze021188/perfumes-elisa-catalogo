@@ -9,7 +9,7 @@ export default {
       fontFamily: {
         sans: ['Montserrat', 'system-ui', 'sans-serif'],
         display: ['Playfair Display', 'Georgia', 'serif'],
-        product: ['Arial', 'Helvetica', 'sans-serif'],
+        product: ['"Segoe UI"', 'Arial', 'Helvetica', 'sans-serif'],
       },
       colors: {
         luxury: {
