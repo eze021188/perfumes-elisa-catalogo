@@ -66,14 +66,17 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
                 </div>
               </div>
 
-              {product.descripcion_html ? (
-                <div 
-                  className="prose prose-sm max-w-none mb-4 font-product"
-                  dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
-                />
-              ) : (
-                <p className="text-gray-600 mb-4 text-sm font-product">{product.descripcion}</p>
-              )}
+              <div className="mb-4">
+                <h3 className="text-sm font-product font-bold text-gray-900 mb-2">Descripción</h3>
+                {product.descripcion_html ? (
+                  <div 
+                    className="prose prose-sm max-w-none font-product"
+                    dangerouslySetInnerHTML={{ __html: product.descripcion_html }} 
+                  />
+                ) : (
+                  <p className="text-gray-600 text-sm font-product">{product.descripcion}</p>
+                )}
+              </div>
 
               {product.piramide_olfativa && (
                 <div className="space-y-3">
