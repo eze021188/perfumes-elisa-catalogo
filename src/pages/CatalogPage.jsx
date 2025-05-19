@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { supabase } from '../supabaseClient';
 import Header from '../components/ui/Header';
 import ProductCard from '../components/ui/ProductCard';
+import ProductModal from '../components/ui/ProductModal';
+import CartModal from '../components/ui/CartModal';
 
 export default function CatalogPage() {
-  const { t } = useTranslation();
   const [productos, setProductos] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,21 +15,22 @@ export default function CatalogPage() {
   const [selectedCat, setSelectedCat] = useState('INICIO');
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const categorias = ['INICIO', 'FRAGANCIA FEMENINA', 'FRAGANCIA MASCULINA', 'UNISEX'];
-  const isMobile = window.innerWidth < 768;
+  const categorias = ['FRAGANCIA MASCULINA', 'FRAGANCIA FEMENINA', 'UNISEX'];
 
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       try {
-        const { data, error } = await supabase.from('productos').select('*');
+        const { data, error } = await supabase
+          .from('productos')
+          .select('*');
+        
         if (error) throw error;
 
         const productsWithCorrectData = data.map(p => ({
           ...p,
-          imagenUrl: p.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen',
+          imagen_url: p.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen',
           stock: parseFloat(p.stock) || 0,
           precio_normal: parseFloat(p.precio_normal) || 0,
           promocion: parseFloat(p.promocion) || null
@@ -49,9 +50,13 @@ export default function CatalogPage() {
 
   useEffect(() => {
     let result = productos;
-    if (selectedCat !== 'INICIO') {
-      result = result.filter(p => p.categoria === selectedCat);
+    
+    if (selectedCat) {
+      result = result.filter(p => 
+        p.categoria.toLowerCase() === selectedCat.toLowerCase()
+      );
     }
+    
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(p => 
@@ -59,13 +64,14 @@ export default function CatalogPage() {
         p.descripcion?.toLowerCase().includes(term)
       );
     }
+    
     setFiltered(result);
   }, [searchTerm, selectedCat, productos]);
 
   const formatCurrency = (amount) => {
-    return amount.toLocaleString('es-CO', {
+    return amount.toLocaleString('es-MX', {
       style: 'currency',
-      currency: 'COP',
+      currency: 'MXN',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     });
@@ -95,8 +101,33 @@ export default function CatalogPage() {
     });
   };
 
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
+  const updateCartItemQuantity = (productId, newQty) => {
+    if (newQty <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+
+    const product = productos.find(p => p.id === productId);
+    if (newQty > product.stock) {
+      toast.error(`Stock insuficiente para ${product.nombre}`);
+      return;
+    }
+
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === productId
+          ? { ...item, qty: newQty }
+          : item
+      )
+    );
+  };
+
+  const removeFromCart = (productId) => {
+    setCartItems(prev => prev.filter(item => item.id !== productId));
+    const product = productos.find(p => p.id === productId);
+    if (product) {
+      toast.success(`${product.nombre} eliminado del carrito`);
+    }
   };
 
   if (loading) {
@@ -111,41 +142,26 @@ export default function CatalogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-luxury-50">
+    <>
       <Header
-        onSearch={setSearchTerm}
         categories={categorias}
         selectedCategory={selectedCat}
         onCategorySelect={setSelectedCat}
+        onSearch={setSearchTerm}
         cartItemsCount={cartItems.reduce((sum, item) => sum + item.qty, 0)}
         onCartClick={() => setIsCartOpen(true)}
-        onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        isMobile={isMobile}
       />
 
-      <main className="max-w-7xl mx-auto px-6 pt-40 pb-20">
-        {/* Título de sección */}
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-display text-luxury-900 mb-4">
-            {selectedCat === 'INICIO' ? 'Nuestra Colección' : selectedCat}
-          </h1>
-          <p className="text-luxury-500 max-w-2xl mx-auto">
-            Descubre nuestra exclusiva selección de fragancias premium, 
-            cuidadosamente seleccionadas para los amantes del perfume más exigentes.
-          </p>
-        </div>
-
-        {/* Grid de productos */}
-        <AnimatePresence mode="popLayout">
+      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+        <AnimatePresence>
           {filtered.length === 0 ? (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="text-center py-12"
             >
-              <p className="text-luxury-500 text-lg">
-                No se encontraron productos que coincidan con tu búsqueda.
-              </p>
+              <p className="text-luxury-500">No se encontraron productos</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -153,7 +169,7 @@ export default function CatalogPage() {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onProductClick={handleProductClick}
+                  onProductClick={() => setSelectedProduct(product)}
                   onAddToCart={addToCart}
                   formatCurrency={formatCurrency}
                 />
@@ -163,37 +179,47 @@ export default function CatalogPage() {
         </AnimatePresence>
       </main>
 
-      {/* Footer */}
       <footer className="bg-luxury-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
               <img
-                src="/imagen/PERFUMESELISAwhite.jpg"
+                src="/imagen/PERFUMESELISA.png"
                 alt="Perfumes Elisa"
                 className="h-16 w-auto object-contain mb-6"
               />
               <p className="text-luxury-200 text-sm">
-                Tu destino para fragancias exclusivas y experiencias olfativas únicas.
+                Tu destino para fragancias exclusivas
               </p>
             </div>
             
             <div>
               <h3 className="font-display text-xl mb-4">Contacto</h3>
               <ul className="space-y-2 text-luxury-200">
-                <li>WhatsApp: +528130804010</li>
-                <li>Email: contacto@perfumeselisa.com</li>
-                <li>Ubicación: Apodaca, N.L.</li>
+                <li className="flex items-center gap-2">
+                  <img src="/imagen/iconos/whatsapp-bn.jpg" alt="" className="w-5 h-5" />
+                  +528130804010
+                </li>
+                <li className="flex items-center gap-2">
+                  <img src="/imagen/iconos/email-bn.jpg" alt="" className="w-5 h-5" />
+                  contacto@perfumeselisa.com
+                </li>
+                <li className="flex items-center gap-2">
+                  <img src="/imagen/iconos/location-bn.jpg" alt="" className="w-5 h-5" />
+                  Apodaca, N.L.
+                </li>
               </ul>
             </div>
 
             <div>
               <h3 className="font-display text-xl mb-4">Síguenos</h3>
               <div className="flex space-x-4">
-                <a href="https://facebook.com/perfumeselisa" className="text-luxury-200 hover:text-white transition-colors">
+                <a href="https://facebook.com/perfumeselisa" className="text-luxury-200 hover:text-white transition-colors flex items-center gap-2">
+                  <img src="/imagen/iconos/facebook-bn.jpg" alt="" className="w-5 h-5" />
                   Facebook
                 </a>
-                <a href="https://instagram.com/perfumeselisa" className="text-luxury-200 hover:text-white transition-colors">
+                <a href="https://instagram.com/perfumeselisa" className="text-luxury-200 hover:text-white transition-colors flex items-center gap-2">
+                  <img src="/imagen/iconos/instagram-bn.jpg" alt="" className="w-5 h-5" />
                   Instagram
                 </a>
               </div>
@@ -201,19 +227,43 @@ export default function CatalogPage() {
 
             <div>
               <h3 className="font-display text-xl mb-4">Envíos</h3>
-              <ul className="space-y-2 text-luxury-200 text-sm">
-                <li>Entregas personales en puntos establecidos</li>
+              <ul className="space-y-2 text-luxury-200">
+                <li className="flex items-center gap-2">
+                  <img src="/imagen/iconos/truck-bn.jpg" alt="" className="w-5 h-5" />
+                  Entregas personales en puntos establecidos
+                </li>
                 <li>Envíos locales desde $80</li>
                 <li>Envíos nacionales desde $139</li>
+                <li className="text-accent font-medium">
+                  ¡Envío gratis en compras mayores a $1,499!
+                </li>
               </ul>
             </div>
           </div>
-
-          <div className="border-t border-luxury-700 mt-12 pt-8 text-center text-luxury-300 text-sm">
-            <p>© {new Date().getFullYear()} Perfumes Elisa. Todos los derechos reservados.</p>
-          </div>
         </div>
       </footer>
-    </div>
+
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+            onAddToCart={addToCart}
+            formatCurrency={formatCurrency}
+          />
+        )}
+
+        {isCartOpen && (
+          <CartModal
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            items={cartItems}
+            onRemove={removeFromCart}
+            onQuantityChange={updateCartItemQuantity}
+            formatCurrency={formatCurrency}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
