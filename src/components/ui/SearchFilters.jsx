@@ -11,7 +11,10 @@ export default function SearchFilters({
   brands = []
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [priceRange, setPriceRange] = useState({ min: minPrice, max: maxPrice });
+  const [priceRange, setPriceRange] = useState({
+    min: Number(minPrice) || 0,
+    max: Number(maxPrice) || 5000
+  });
   const [selectedBrand, setSelectedBrand] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -22,7 +25,10 @@ export default function SearchFilters({
   };
 
   const handlePriceChange = (value) => {
-    const newRange = { min: value[0], max: value[1] };
+    const newRange = {
+      min: Number(value[0]) || 0,
+      max: Number(value[1]) || 5000
+    };
     setPriceRange(newRange);
     onPriceRangeChange(newRange);
   };
@@ -76,17 +82,17 @@ export default function SearchFilters({
                   <Slider
                     value={[priceRange.min, priceRange.max]}
                     onChange={handlePriceChange}
-                    min={minPrice}
-                    max={maxPrice}
+                    min={Number(minPrice) || 0}
+                    max={Number(maxPrice) || 5000}
                     step={100}
                     className="h-1.5"
                   />
                   <div className="flex justify-between mt-2">
                     <span className="text-xs text-luxury-500">
-                      ${priceRange.min.toLocaleString()}
+                      ${(priceRange.min || 0).toLocaleString()}
                     </span>
                     <span className="text-xs text-luxury-500">
-                      ${priceRange.max.toLocaleString()}
+                      ${(priceRange.max || 5000).toLocaleString()}
                     </span>
                   </div>
                 </div>
