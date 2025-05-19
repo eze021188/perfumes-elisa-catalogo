@@ -74,7 +74,7 @@ export default function Header({
                       : 'text-luxury-500 hover:text-luxury-900'
                     }`}
                 >
-                  {t(`categories.${category.toLowerCase()}`)}
+                  {category}
                 </button>
               ))}
             </nav>
