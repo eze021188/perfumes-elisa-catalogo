@@ -30,27 +30,11 @@ export default function ProductCard({
       exit={{ opacity: 0, y: 20 }}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group bg-white rounded-2xl luxury-card-shadow flex flex-col cursor-pointer overflow-hidden"
+      className="group bg-white rounded-2xl luxury-card-shadow aspect-square flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Etiqueta de descuento */}
-      {discount && (
-        <div className="absolute top-4 left-4 z-10">
-          <div className="bg-luxury-900 text-white px-4 py-1.5 text-xs tracking-wider font-medium rounded-full">
-            {discount}% OFF
-          </div>
-        </div>
-      )}
-
-      {/* Categoría */}
-      <div className="absolute top-4 right-4 z-10">
-        <div className="bg-white/90 backdrop-blur-sm text-luxury-900 px-3 py-1 text-xs tracking-wider font-medium rounded-full">
-          {categoria}
-        </div>
-      </div>
-
-      {/* Image container */}
-      <div className="relative aspect-square bg-luxury-50 overflow-hidden">
+      {/* Imagen del producto */}
+      <div className="relative w-full aspect-square bg-luxury-50 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -60,55 +44,61 @@ export default function ProductCard({
             e.target.onerror = null;
           }}
         />
-        <div className="absolute inset-0 bg-luxury-900/0 group-hover:bg-luxury-900/5 transition-colors duration-300" />
+        
+        {/* Etiqueta de descuento */}
+        {discount && (
+          <div className="absolute top-4 left-4">
+            <div className="bg-luxury-900 text-white px-3 py-1 text-xs font-medium rounded-full">
+              -{discount}%
+            </div>
+          </div>
+        )}
+
+        {/* Categoría */}
+        <div className="absolute top-4 right-4">
+          <div className="bg-white/90 backdrop-blur-sm text-luxury-900 px-3 py-1 text-xs font-medium rounded-full">
+            {categoria}
+          </div>
+        </div>
       </div>
 
       {/* Información del producto */}
-      <div className="p-6 flex flex-col gap-4 flex-grow">
-        <h3 className="font-display text-xl text-luxury-900 leading-snug line-clamp-2">
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className="font-display text-lg text-luxury-900 leading-tight line-clamp-2 mb-2">
           {nombre}
         </h3>
 
-        {/* Precios */}
-        <div className="mt-auto space-y-2">
-          {promocion !== null && promocion < precio_normal ? (
-            <>
+        {/* Contenedor de precio y stock */}
+        <div className="mt-auto flex justify-between items-baseline mb-4">
+          <div className="space-y-1">
+            {promocion !== null && promocion < precio_normal && (
               <div className="text-luxury-400 line-through text-sm">
                 {formatCurrency(precio_normal)}
               </div>
-              <div className="text-luxury-900 text-2xl font-display">
-                {formatCurrency(promocion)}
-              </div>
-            </>
-          ) : (
-            <div className="text-luxury-900 text-2xl font-display">
-              {formatCurrency(precio_normal)}
-            </div>
-          )}
-        </div>
-
-        {/* Footer con stock y botón */}
-        <div className="flex items-center justify-between pt-4 border-t border-luxury-100">
-          <p className="text-sm text-luxury-500 font-medium">
-            {stock > 0 ? (
-              <span>{stock} {t('inStock')}</span>
-            ) : (
-              <span className="text-red-500">{t('outOfStock')}</span>
             )}
-          </p>
-
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddToCart(product);
-            }}
-            disabled={stock <= 0}
-            className="btn-luxury rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {stock > 0 ? t('addToCart') : t('notifyMe')}
-          </motion.button>
+            <div className="text-luxury-900 text-lg font-display">
+              {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
+            </div>
+          </div>
+          
+          <div className="text-sm text-luxury-500">
+            {stock} {t('inStock')}
+          </div>
         </div>
+
+        {/* Botón de acción */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart(product);
+          }}
+          disabled={stock <= 0}
+          className="w-full bg-luxury-900 text-white py-2 text-sm font-medium rounded-xl
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   hover:bg-luxury-800 transition-colors"
+        >
+          {stock > 0 ? t('addToCart') : t('notifyMe')}
+        </button>
       </div>
     </motion.article>
   );
