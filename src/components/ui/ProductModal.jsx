@@ -27,7 +27,7 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
         <div className="flex flex-col">
           {/* Header con título y botón cerrar */}
           <div className="p-4 flex justify-between items-center border-b border-gray-100">
-            <h2 className="text-xl font-medium">{product.nombre}</h2>
+            <h2 className="text-xl font-product font-medium">{product.nombre}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
