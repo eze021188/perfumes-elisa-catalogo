@@ -30,11 +30,11 @@ export default function ProductCard({
       exit={{ opacity: 0, y: 20 }}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group bg-white rounded-2xl luxury-card-shadow aspect-[3/4] flex flex-col cursor-pointer overflow-hidden"
+      className="group bg-white rounded-xl luxury-card-shadow aspect-[3/4] flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
       {/* Imagen del producto - 60% del espacio */}
-      <div className="relative w-full h-[60%] bg-luxury-50 overflow-hidden">
+      <div className="relative w-full h-[60%] bg-luxury-100 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -48,7 +48,7 @@ export default function ProductCard({
         {/* Etiqueta de descuento */}
         {discount && (
           <div className="absolute top-4 left-4">
-            <div className="bg-accent text-white px-3 py-1 text-xs font-medium rounded-full">
+            <div className="bg-accent/90 backdrop-blur-sm text-white px-3 py-1 text-xs font-medium rounded-full">
               -{discount}%
             </div>
           </div>
@@ -63,9 +63,9 @@ export default function ProductCard({
       </div>
 
       {/* Información del producto - 40% del espacio */}
-      <div className="p-3 flex flex-col h-[40%] justify-between bg-luxury-800 text-white">
+      <div className="p-4 flex flex-col h-[40%] justify-between bg-luxury-200">
         {/* Nombre del producto */}
-        <h3 className="text-sm leading-tight line-clamp-2 mb-2 font-medium">
+        <h3 className="text-sm leading-tight line-clamp-2 mb-2 font-medium text-luxury-900">
           {nombre}
         </h3>
 
@@ -73,16 +73,16 @@ export default function ProductCard({
         <div className="flex justify-between items-center mb-2">
           <div className="flex flex-col">
             {promocion !== null && promocion < precio_normal && (
-              <span className="text-luxury-300 line-through text-xs">
+              <span className="text-luxury-500 line-through text-xs">
                 {formatCurrency(precio_normal)}
               </span>
             )}
-            <span className="text-white font-semibold">
+            <span className="text-luxury-900 font-semibold">
               {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
             </span>
           </div>
           
-          <div className="text-xs text-luxury-300">
+          <div className="text-xs text-luxury-600">
             {stock} {t('inStock')}
           </div>
         </div>
@@ -94,9 +94,9 @@ export default function ProductCard({
             onAddToCart(product);
           }}
           disabled={stock <= 0}
-          className="w-full bg-accent text-white py-1.5 text-xs font-medium rounded-xl
+          className="w-full bg-accent/90 text-white py-1.5 text-xs font-medium rounded-lg
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   hover:bg-accent-dark transition-colors"
+                   hover:bg-accent transition-colors"
         >
           {stock > 0 ? t('addToCart') : t('notifyMe')}
         </button>
