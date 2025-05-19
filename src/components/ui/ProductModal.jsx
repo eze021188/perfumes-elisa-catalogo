@@ -25,10 +25,10 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
         className="bg-white max-w-4xl w-full max-h-[90vh] overflow-auto rounded-lg shadow-xl"
       >
         <div className="flex flex-col md:flex-row">
-          {/* Imagen */}
+          {/* Image container */}
           <div className="w-full md:w-1/2 bg-luxury-50 p-8 flex items-center justify-center">
             <img
-              src={product.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen'}
+              src={product.imagen_url}
               alt={product.nombre}
               className="max-w-full h-auto object-contain"
               onError={(e) => {
