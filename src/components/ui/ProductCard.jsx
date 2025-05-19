@@ -33,8 +33,8 @@ export default function ProductCard({
       className="group bg-white rounded-2xl luxury-card-shadow aspect-square flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Imagen del producto */}
-      <div className="relative w-full h-[65%] bg-luxury-50 overflow-hidden">
+      {/* Imagen del producto - 75% del espacio */}
+      <div className="relative w-full h-[75%] bg-luxury-50 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -62,26 +62,27 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Información del producto */}
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="font-display text-lg text-luxury-900 leading-tight line-clamp-2 mb-2">
+      {/* Información del producto - 25% del espacio */}
+      <div className="p-3 flex flex-col h-[25%]">
+        {/* Nombre del producto con tamaño reducido */}
+        <h3 className="font-display text-sm text-luxury-900 leading-tight line-clamp-1 mb-2">
           {nombre}
         </h3>
 
         {/* Contenedor de precio y stock */}
-        <div className="mt-auto flex justify-between items-baseline mb-4">
-          <div className="space-y-1">
+        <div className="flex justify-between items-center mb-2">
+          <div>
             {promocion !== null && promocion < precio_normal && (
-              <div className="text-luxury-400 line-through text-sm">
+              <div className="text-luxury-400 line-through text-xs">
                 {formatCurrency(precio_normal)}
               </div>
             )}
-            <div className="text-luxury-900 text-lg font-display">
+            <div className="text-luxury-900 text-sm font-medium">
               {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
             </div>
           </div>
           
-          <div className="text-sm text-luxury-500">
+          <div className="text-xs text-luxury-500">
             {stock} {t('inStock')}
           </div>
         </div>
@@ -93,9 +94,9 @@ export default function ProductCard({
             onAddToCart(product);
           }}
           disabled={stock <= 0}
-          className="w-full bg-luxury-900 text-white py-2 text-sm font-medium rounded-xl
+          className="w-full bg-luxury-900 text-white py-1.5 text-xs font-medium rounded-xl
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   hover:bg-luxury-800 transition-colors"
+                   hover:bg-luxury-800 transition-colors mt-auto"
         >
           {stock > 0 ? t('addToCart') : t('notifyMe')}
         </button>
