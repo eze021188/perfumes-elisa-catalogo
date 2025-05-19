@@ -64,8 +64,8 @@ export default function ProductCard({
 
       {/* Información del producto - 40% del espacio */}
       <div className="p-4 flex flex-col h-[40%] justify-between bg-luxury-200">
-        {/* Nombre del producto */}
-        <h3 className="text-sm leading-tight line-clamp-2 mb-2 font-medium text-luxury-900">
+        {/* Nombre del producto - Ahora usando font-display */}
+        <h3 className="font-display text-base leading-tight line-clamp-2 mb-2 text-luxury-900">
           {nombre}
         </h3>
 
@@ -77,7 +77,7 @@ export default function ProductCard({
                 {formatCurrency(precio_normal)}
               </span>
             )}
-            <span className="text-luxury-900 font-semibold">
+            <span className="text-luxury-900 font-display text-lg">
               {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
             </span>
           </div>
