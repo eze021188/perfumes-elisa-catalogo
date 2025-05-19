@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -75,11 +75,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-luxury-200 hover:text-white transition-colors"
               >
-                <img
-                  src="/imagen/iconos/facebook-bn.jpg"
-                  alt="Facebook"
-                  className="w-6 h-6"
-                />
+                <Facebook className="w-6 h-6" />
               </a>
               <a
                 href="https://www.instagram.com/perfumes.elisa"
@@ -87,11 +83,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-luxury-200 hover:text-white transition-colors"
               >
-                <img
-                  src="/imagen/iconos/instagram-bn.jpg"
-                  alt="Instagram"
-                  className="w-6 h-6"
-                />
+                <Instagram className="w-6 h-6" />
               </a>
               <a
                 href="https://wa.me/528130804010"
@@ -99,11 +91,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-luxury-200 hover:text-white transition-colors"
               >
-                <img
-                  src="/imagen/iconos/whatsapp-bn.jpg"
-                  alt="WhatsApp"
-                  className="w-6 h-6"
-                />
+                <MessageCircle className="w-6 h-6" />
               </a>
             </div>
           </div>
