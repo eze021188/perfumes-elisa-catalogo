@@ -1,4 +1,5 @@
 import React from 'react';
+import { Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -28,11 +29,7 @@ export default function Footer() {
               +52 81 3080 4010
             </li>
             <li className="flex items-center gap-2">
-              <img 
-                src="/imagen/iconos/email-bn.jpg" 
-                alt="Email" 
-                className="w-4 h-4 object-contain"
-              />
+              <Mail className="w-4 h-4" />
               contacto@perfumeselisa.com
             </li>
             <li className="flex items-center gap-2">
