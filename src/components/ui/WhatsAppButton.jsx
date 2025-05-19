@@ -7,6 +7,7 @@ export default function WhatsAppButton() {
   });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('whatsappButtonPosition', JSON.stringify(position));
@@ -14,6 +15,7 @@ export default function WhatsAppButton() {
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
+    setHasMoved(false);
     setDragStart({
       x: e.clientX - position.x,
       y: e.clientY - position.y
@@ -23,6 +25,7 @@ export default function WhatsAppButton() {
   const handleMouseMove = (e) => {
     if (!isDragging) return;
 
+    setHasMoved(true);
     const newX = Math.max(0, Math.min(window.innerWidth - 60, e.clientX - dragStart.x));
     const newY = Math.max(0, Math.min(window.innerHeight - 60, e.clientY - dragStart.y));
 
@@ -46,7 +49,7 @@ export default function WhatsAppButton() {
   }, [isDragging, dragStart]);
 
   const handleClick = (e) => {
-    if (!isDragging) {
+    if (!hasMoved) {
       window.open('https://wa.me/528130804010', '_blank');
     }
   };
@@ -55,6 +58,7 @@ export default function WhatsAppButton() {
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
     setIsDragging(true);
+    setHasMoved(false);
     setDragStart({
       x: touch.clientX - position.x,
       y: touch.clientY - position.y
@@ -65,6 +69,7 @@ export default function WhatsAppButton() {
     if (!isDragging) return;
     e.preventDefault();
 
+    setHasMoved(true);
     const touch = e.touches[0];
     const newX = Math.max(0, Math.min(window.innerWidth - 60, touch.clientX - dragStart.x));
     const newY = Math.max(0, Math.min(window.innerHeight - 60, touch.clientY - dragStart.y));
