@@ -12,33 +12,36 @@ export default function CatalogPage() {
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCat, setSelectedCat] = useState('INICIO');
+  const [selectedCat, setSelectedCat] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const categorias = ['FRAGANCIA MASCULINA', 'FRAGANCIA FEMENINA', 'UNISEX'];
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     async function fetchProducts() {
-      setLoading(true);
       try {
         const { data, error } = await supabase
           .from('productos')
-          .select('*');
+          .select('*')
+          .order('nombre');
         
         if (error) throw error;
 
-        const productsWithCorrectData = data.map(p => {
-          const imagen_url = p.imagen_url || p.imagenUrl || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen';
-          
-          return {
-            ...p,
-            imagen_url,
-            stock: parseFloat(p.stock) || 0,
-            precio_normal: parseFloat(p.precio_normal) || 0,
-            promocion: parseFloat(p.promocion) || null
-          };
-        });
+        const productsWithCorrectData = data.map(p => ({
+          ...p,
+          imagen_url: p.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen',
+          stock: parseInt(p.stock) || 0,
+          precio_normal: parseFloat(p.precio_normal) || 0,
+          promocion: p.promocion ? parseFloat(p.promocion) : null
+        }));
 
         setProductos(productsWithCorrectData);
         setFiltered(productsWithCorrectData);
@@ -49,6 +52,7 @@ export default function CatalogPage() {
         setLoading(false);
       }
     }
+
     fetchProducts();
   }, []);
 
@@ -57,14 +61,14 @@ export default function CatalogPage() {
     
     if (selectedCat) {
       result = result.filter(p => 
-        p.categoria.toLowerCase() === selectedCat.toLowerCase()
+        p.categoria?.toLowerCase() === selectedCat.toLowerCase()
       );
     }
     
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(p => 
-        p.nombre.toLowerCase().includes(term) ||
+        p.nombre?.toLowerCase().includes(term) ||
         p.descripcion?.toLowerCase().includes(term)
       );
     }
@@ -73,16 +77,16 @@ export default function CatalogPage() {
   }, [searchTerm, selectedCat, productos]);
 
   const formatCurrency = (amount) => {
-    return amount.toLocaleString('es-MX', {
+    return new Intl.NumberFormat('es-MX', {
       style: 'currency',
       currency: 'MXN',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    });
+    }).format(amount);
   };
 
   const addToCart = (product) => {
-    if (product.stock <= 0) {
+    if (!product.stock || product.stock <= 0) {
       toast.error(`${product.nombre} está agotado`);
       return;
     }
@@ -112,8 +116,8 @@ export default function CatalogPage() {
     }
 
     const product = productos.find(p => p.id === productId);
-    if (newQty > product.stock) {
-      toast.error(`Stock insuficiente para ${product.nombre}`);
+    if (!product || newQty > product.stock) {
+      toast.error(`Stock insuficiente para ${product?.nombre}`);
       return;
     }
 
@@ -127,8 +131,8 @@ export default function CatalogPage() {
   };
 
   const removeFromCart = (productId) => {
-    setCartItems(prev => prev.filter(item => item.id !== productId));
     const product = productos.find(p => p.id === productId);
+    setCartItems(prev => prev.filter(item => item.id !== productId));
     if (product) {
       toast.success(`${product.nombre} eliminado del carrito`);
     }
@@ -154,9 +158,10 @@ export default function CatalogPage() {
         onSearch={setSearchTerm}
         cartItemsCount={cartItems.reduce((sum, item) => sum + item.qty, 0)}
         onCartClick={() => setIsCartOpen(true)}
+        isMobile={isMobile}
       />
 
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-20">
         <AnimatePresence>
           {filtered.length === 0 ? (
             <motion.div
@@ -168,7 +173,7 @@ export default function CatalogPage() {
               <p className="text-luxury-500">No se encontraron productos</p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
               {filtered.map(product => (
                 <ProductCard
                   key={product.id}
@@ -184,7 +189,7 @@ export default function CatalogPage() {
       </main>
 
       <footer className="bg-luxury-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
               <img
@@ -218,11 +223,11 @@ export default function CatalogPage() {
             <div>
               <h3 className="font-display text-xl mb-4">Síguenos</h3>
               <div className="flex space-x-4">
-                <a href="https://facebook.com/perfumeselisa" className="text-luxury-200 hover:text-white transition-colors flex items-center gap-2">
+                <a href="https://facebook.com/perfumeselisa" target="_blank" rel="noopener noreferrer" className="text-luxury-200 hover:text-white transition-colors flex items-center gap-2">
                   <img src="/imagen/iconos/facebook-bn.jpg" alt="" className="w-5 h-5" />
                   Facebook
                 </a>
-                <a href="https://instagram.com/perfumeselisa" className="text-luxury-200 hover:text-white transition-colors flex items-center gap-2">
+                <a href="https://instagram.com/perfumeselisa" target="_blank" rel="noopener noreferrer" className="text-luxury-200 hover:text-white transition-colors flex items-center gap-2">
                   <img src="/imagen/iconos/instagram-bn.jpg" alt="" className="w-5 h-5" />
                   Instagram
                 </a>
