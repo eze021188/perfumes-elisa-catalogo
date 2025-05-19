@@ -20,7 +20,7 @@ i18n
           stock: 'Disponibilidad',
           price: 'Precio',
           exclusive: 'Exclusivo',
-          exclusiveOffer: '✨ ENVÍO GRATIS EN COMPRAS SUPERIORES A $999 ✨',
+          exclusiveOffer: '✨ ENVÍO GRATIS EN COMPRAS SUPERIORES A $1499 ✨',
           categories: {
             all: 'COLECCIÓN COMPLETA',
             women: 'FRAGANCIAS FEMENINAS',
@@ -42,7 +42,7 @@ i18n
           stock: 'Availability',
           price: 'Price',
           exclusive: 'Exclusive',
-          exclusiveOffer: '✨ FREE SHIPPING ON ORDERS OVER $999 ✨',
+          exclusiveOffer: '✨ FREE SHIPPING ON ORDERS OVER $1499 ✨',
           categories: {
             all: 'COMPLETE COLLECTION',
             women: 'WOMEN\'S FRAGRANCES',
