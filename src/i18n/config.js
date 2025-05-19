@@ -23,9 +23,9 @@ i18n
           exclusiveOffer: '✨ ENVÍO GRATIS EN COMPRAS SUPERIORES A $1499 ✨',
           categories: {
             all: 'COLECCIÓN COMPLETA',
-            women: 'FRAGANCIAS FEMENINAS',
-            men: 'FRAGANCIAS MASCULINAS',
-            unisex: 'COLECCIÓN UNISEX'
+            women: 'FRAGANCIA FEMENINA',
+            men: 'FRAGANCIA MASCULINA',
+            unisex: 'UNISEX'
           }
         }
       },
@@ -45,9 +45,9 @@ i18n
           exclusiveOffer: '✨ FREE SHIPPING ON ORDERS OVER $1499 ✨',
           categories: {
             all: 'COMPLETE COLLECTION',
-            women: 'WOMEN\'S FRAGRANCES',
-            men: 'MEN\'S FRAGRANCES',
-            unisex: 'UNISEX COLLECTION'
+            women: 'FRAGANCIA FEMENINA',
+            men: 'FRAGANCIA MASCULINA',
+            unisex: 'UNISEX'
           }
         }
       }
