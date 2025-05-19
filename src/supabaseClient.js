@@ -4,7 +4,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Las variables de entorno de Supabase no están configuradas. Por favor, usa el botón "Connect to Supabase" en la parte superior derecha.');
+  throw new Error('Las variables de entorno de Supabase no están configuradas correctamente. Verifica tu archivo .env');
 }
 
 // Log the URL to verify it's being read correctly (but not the key for security)
@@ -12,10 +12,17 @@ console.log('Supabase URL:', supabaseUrl);
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: true
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
   },
   db: {
     schema: 'public'
+  },
+  global: {
+    headers: {
+      'x-application-name': 'perfumes-elisa-catalogo'
+    }
   }
 });
 
