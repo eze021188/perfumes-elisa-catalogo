@@ -7,7 +7,6 @@ import ProductCard from '../components/ui/ProductCard';
 import ProductModal from '../components/ui/ProductModal';
 import CartModal from '../components/ui/CartModal';
 import Footer from '../components/ui/Footer';
-import SearchFilters from '../components/ui/SearchFilters';
 
 function CatalogPage() {
   const [products, setProducts] = useState([]);
@@ -60,7 +59,7 @@ function CatalogPage() {
   }, []);
 
   useEffect(() => {
-    let result = products;
+    let result = [...products];
     
     if (!showOutOfStock) {
       result = result.filter(p => p.stock > 0);
@@ -158,17 +157,6 @@ function CatalogPage() {
       />
 
       <main className="max-w-8xl mx-auto px-4 sm:px-6 pt-32 pb-20">
-        <div className="mb-8">
-          <SearchFilters
-            onSearch={setSearchTerm}
-            onPriceRangeChange={setPriceRange}
-            onBrandChange={setSelectedBrand}
-            onToggleOutOfStock={setShowOutOfStock}
-            showOutOfStock={showOutOfStock}
-            brands={brands}
-          />
-        </div>
-
         <AnimatePresence>
           {filtered.length === 0 ? (
             <motion.div

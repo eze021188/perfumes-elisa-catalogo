@@ -16,7 +16,9 @@ export default function Header({
   onViewModeChange,
   onMenuClick,
   isMobile,
-  brands = []
+  brands = [],
+  showOutOfStock,
+  onToggleOutOfStock
 }) {
   const { t } = useTranslation();
 
@@ -55,6 +57,8 @@ export default function Header({
               onPriceRangeChange={onPriceRangeChange}
               onBrandChange={onBrandChange}
               brands={brands}
+              showOutOfStock={showOutOfStock}
+              onToggleOutOfStock={onToggleOutOfStock}
             />
           </div>
 
