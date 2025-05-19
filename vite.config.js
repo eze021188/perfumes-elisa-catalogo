@@ -31,16 +31,19 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom']
+          vendor: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js'],
+          ui: ['@headlessui/react', 'framer-motion', 'sonner'],
+          i18n: ['i18next', 'react-i18next']
         }
       }
     }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom', '@supabase/supabase-js']
   },
   test: {
     globals: true,
