@@ -25,55 +25,68 @@ export default function ProductCard({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ scale: 1.02 }}
-      className="bg-white rounded-lg overflow-hidden shadow-md relative flex flex-col cursor-pointer hover:shadow-lg transition-all duration-200"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
+      className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl relative flex flex-col cursor-pointer border border-gray-100"
       onClick={() => onProductClick(product)}
     >
+      {/* Etiqueta de descuento */}
       {discount && (
-        <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">
-          -{discount}%
-        </span>
+        <div className="absolute top-4 left-4 z-10">
+          <div className="bg-black bg-opacity-90 text-white text-xs font-medium px-3 py-1 rounded-full">
+            {t('exclusive')} -{discount}%
+          </div>
+        </div>
       )}
 
-      <div className="w-full h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
+      {/* Imagen del producto con overlay */}
+      <div className="relative w-full pt-[100%] bg-gray-50 overflow-hidden">
         <img
           src={imagenUrl || 'https://placehold.co/400x400/e2e8f0/333?text=No+Imagen'}
           alt={nombre}
-          className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
+          className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
           onError={(e) => {
             e.target.src = 'https://placehold.co/400x400/e2e8f0/333?text=No+Imagen';
             e.target.onerror = null;
           }}
         />
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
       </div>
 
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
+      {/* Contenido del producto */}
+      <div className="p-6 flex flex-col flex-grow space-y-4">
+        <h3 className="font-serif text-lg text-gray-900 leading-snug tracking-wide line-clamp-2">
           {nombre}
         </h3>
 
-        <div className="mt-auto">
+        <div className="mt-auto space-y-4">
+          {/* Precios */}
           {promocion !== null && promocion < precio_normal ? (
-            <div className="flex items-baseline space-x-2 mb-2">
-              <span className="text-gray-500 line-through text-sm">
+            <div className="space-y-1">
+              <div className="text-gray-400 line-through text-sm">
                 {formatCurrency(precio_normal)}
-              </span>
-              <span className="text-green-600 font-bold text-lg">
+              </div>
+              <div className="text-xl font-medium">
                 {formatCurrency(promocion)}
-              </span>
+              </div>
             </div>
           ) : (
-            <p className="text-gray-700 font-bold text-lg mb-2">
+            <div className="text-xl font-medium">
               {formatCurrency(precio_normal)}
-            </p>
+            </div>
           )}
 
+          {/* Botón de acción y stock */}
           <div className="flex items-center justify-between pt-2">
-            <p className="text-sm text-gray-600">
-              Stock: <span className="font-medium">{stock}</span>
+            <p className="text-sm text-gray-500 font-medium">
+              {stock > 0 ? (
+                <span>{stock} {t('inStock')}</span>
+              ) : (
+                <span className="text-red-500">{t('outOfStock')}</span>
+              )}
             </p>
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -82,10 +95,11 @@ export default function ProductCard({
                 onAddToCart(product);
               }}
               disabled={stock <= 0}
-              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors text-xs"
-              title={stock > 0 ? t('addToCart') : t('outOfStock')}
+              className="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg 
+                         hover:bg-gray-900 disabled:opacity-50 disabled:hover:bg-black 
+                         transition-colors duration-200"
             >
-              {stock > 0 ? '+' : '×'}
+              {stock > 0 ? t('addToCart') : t('notifyMe')}
             </motion.button>
           </div>
         </div>

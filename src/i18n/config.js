@@ -9,37 +9,45 @@ i18n
     resources: {
       es: {
         translation: {
-          search: 'Buscar...',
+          search: 'Buscar fragancias exclusivas...',
           cart: 'Carrito',
-          addToCart: 'Agregar al carrito',
+          addToCart: 'Añadir al carrito',
           outOfStock: 'Agotado',
+          notifyMe: 'Notificarme',
+          inStock: 'disponibles',
           contact: 'Contacto',
           delivery: 'Entrega',
-          stock: 'Stock',
+          stock: 'Disponibilidad',
           price: 'Precio',
+          exclusive: 'Exclusivo',
+          exclusiveOffer: '✨ ENVÍO GRATIS EN COMPRAS SUPERIORES A $999 ✨',
           categories: {
-            all: 'INICIO',
-            women: 'FRAGANCIA FEMENINA',
-            men: 'FRAGANCIA MASCULINA',
-            unisex: 'UNISEX'
+            all: 'COLECCIÓN COMPLETA',
+            women: 'FRAGANCIAS FEMENINAS',
+            men: 'FRAGANCIAS MASCULINAS',
+            unisex: 'COLECCIÓN UNISEX'
           }
         }
       },
       en: {
         translation: {
-          search: 'Search...',
+          search: 'Search exclusive fragrances...',
           cart: 'Cart',
           addToCart: 'Add to cart',
           outOfStock: 'Out of stock',
+          notifyMe: 'Notify me',
+          inStock: 'in stock',
           contact: 'Contact',
           delivery: 'Delivery',
-          stock: 'Stock',
+          stock: 'Availability',
           price: 'Price',
+          exclusive: 'Exclusive',
+          exclusiveOffer: '✨ FREE SHIPPING ON ORDERS OVER $999 ✨',
           categories: {
-            all: 'HOME',
-            women: 'WOMEN FRAGRANCE',
-            men: 'MEN FRAGRANCE',
-            unisex: 'UNISEX'
+            all: 'COMPLETE COLLECTION',
+            women: 'WOMEN\'S FRAGRANCES',
+            men: 'MEN\'S FRAGRANCES',
+            unisex: 'UNISEX COLLECTION'
           }
         }
       }
