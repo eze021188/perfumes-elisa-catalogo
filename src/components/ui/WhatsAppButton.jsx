@@ -1,14 +1,100 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function WhatsAppButton() {
-  const handleClick = () => {
-    window.open('https://wa.me/528130804010', '_blank');
+  const [position, setPosition] = useState(() => {
+    const saved = localStorage.getItem('whatsappButtonPosition');
+    return saved ? JSON.parse(saved) : { x: 24, y: 24 };
+  });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    localStorage.setItem('whatsappButtonPosition', JSON.stringify(position));
+  }, [position]);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const newX = Math.max(0, Math.min(window.innerWidth - 60, e.clientX - dragStart.x));
+    const newY = Math.max(0, Math.min(window.innerHeight - 60, e.clientY - dragStart.y));
+
+    setPosition({ x: newX, y: newY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragStart]);
+
+  const handleClick = (e) => {
+    if (!isDragging) {
+      window.open('https://wa.me/528130804010', '_blank');
+    }
+  };
+
+  // Touch event handlers
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setDragStart({
+      x: touch.clientX - position.x,
+      y: touch.clientY - position.y
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const newX = Math.max(0, Math.min(window.innerWidth - 60, touch.clientX - dragStart.x));
+    const newY = Math.max(0, Math.min(window.innerHeight - 60, touch.clientY - dragStart.y));
+
+    setPosition({ x: newX, y: newY });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
   };
 
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#128C7E] text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50"
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        cursor: isDragging ? 'grabbing' : 'grab',
+        touchAction: 'none'
+      }}
+      className={`
+        bg-[#25D366] hover:bg-[#128C7E] text-white p-3 rounded-full 
+        shadow-lg transition-colors duration-300 z-50
+        ${isDragging ? 'scale-110' : 'hover:scale-110'}
+      `}
       aria-label="Contactar por WhatsApp"
     >
       <svg
