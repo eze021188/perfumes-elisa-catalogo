@@ -56,21 +56,21 @@ export default function ProductModal({ product, onClose, onAddToCart, formatCurr
             <div className="flex flex-col h-[280px] overflow-y-auto">
               <div className="mb-4">
                 {/* Precios */}
-                <div className="flex items-center gap-3 mb-2">
-                  {/* Precio promocional */}
-                  <span className="text-2xl font-product font-bold text-luxury-900">
-                    {formatCurrency(product.promocion && product.promocion < product.precio_normal ? product.promocion : product.precio_normal)}
-                  </span>
+                <div className="flex flex-col gap-1">
+                  {/* Precio normal (siempre visible) */}
+                  <div className={`${product.promocion && product.promocion < product.precio_normal ? 'text-red-600 line-through text-xl' : 'text-2xl font-bold text-luxury-900'}`}>
+                    {formatCurrency(product.precio_normal)}
+                  </div>
                   
-                  {/* Precio normal tachado en rojo */}
+                  {/* Precio promocional (si existe) */}
                   {product.promocion && product.promocion < product.precio_normal && (
-                    <span className="text-red-600 line-through text-lg font-product">
-                      {formatCurrency(product.precio_normal)}
-                    </span>
+                    <div className="text-2xl font-bold text-luxury-900">
+                      {formatCurrency(product.promocion)}
+                    </div>
                   )}
                 </div>
                 
-                <div className="text-sm font-product text-gray-600">
+                <div className="text-sm font-product text-gray-600 mt-2">
                   Categoría: {product.categoria}
                 </div>
                 <div className="text-sm font-product text-gray-600">
