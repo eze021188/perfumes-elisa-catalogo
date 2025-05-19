@@ -40,7 +40,8 @@ export default function CatalogPage() {
           imagen_url: p.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen',
           stock: parseInt(p.stock) || 0,
           precio_normal: parseFloat(p.precio_normal) || 0,
-          promocion: p.promocion ? parseFloat(p.promocion) : null
+          promocion: p.promocion ? parseFloat(p.promocion) : null,
+          categoria: normalizarCategoria(p.categoria)
         }));
 
         setProductos(productsWithCorrectData);
@@ -56,12 +57,22 @@ export default function CatalogPage() {
     fetchProducts();
   }, []);
 
+  const normalizarCategoria = (categoria) => {
+    if (!categoria) return '';
+    
+    const cat = categoria.toUpperCase();
+    if (cat.includes('MASCULINA') || cat.includes('HOMBRE')) return 'FRAGANCIA MASCULINA';
+    if (cat.includes('FEMENINA') || cat.includes('MUJER')) return 'FRAGANCIA FEMENINA';
+    if (cat.includes('UNISEX')) return 'UNISEX';
+    return categoria;
+  };
+
   useEffect(() => {
     let result = productos;
     
     if (selectedCat) {
       result = result.filter(p => 
-        p.categoria?.toLowerCase() === selectedCat.toLowerCase()
+        normalizarCategoria(p.categoria) === normalizarCategoria(selectedCat)
       );
     }
     
