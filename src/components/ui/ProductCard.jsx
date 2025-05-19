@@ -48,7 +48,7 @@ export default function ProductCard({
         {/* Etiqueta de descuento */}
         {discount && (
           <div className="absolute top-4 left-4">
-            <div className="bg-accent/90 backdrop-blur-sm text-white px-3 py-1 text-xs font-medium rounded-full">
+            <div className="bg-red-600 text-white px-3 py-1 text-xs font-medium rounded-full">
               -{discount}%
             </div>
           </div>
@@ -71,17 +71,17 @@ export default function ProductCard({
 
         {/* Precios y stock */}
         <div className="flex flex-col gap-1 mb-2">
-          {/* Siempre mostrar precio normal */}
-          <div className={`text-sm ${promocion !== null && promocion < precio_normal ? 'text-luxury-500 line-through' : 'text-luxury-900 font-semibold'}`}>
-            {formatCurrency(precio_normal)}
-          </div>
-          
-          {/* Mostrar precio promocional si existe */}
+          {/* Mostrar precio promocional primero si existe */}
           {promocion !== null && promocion < precio_normal && (
-            <div className="text-accent font-bold">
+            <div className="text-red-600 font-bold text-base">
               {formatCurrency(promocion)}
             </div>
           )}
+          
+          {/* Precio normal */}
+          <div className={`text-sm ${promocion !== null && promocion < precio_normal ? 'text-gray-500 line-through' : 'text-luxury-900 font-semibold'}`}>
+            {formatCurrency(precio_normal)}
+          </div>
           
           {/* Stock */}
           <div className="text-xs text-luxury-600">
