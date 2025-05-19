@@ -1,27 +1,21 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import Toast from './components/ui/Toast';
-import Loading from './components/ui/Loading';
-
-const CatalogPage = React.lazy(() => import('./pages/CatalogPage'));
+import { Toaster } from 'react-hot-toast';
+import CatalogPage from './pages/CatalogPage';
+import SEOHead from './components/SEOHead';
 
 function App() {
   return (
     <Router>
-      <Helmet>
-        <title>Perfumes Elisa Catálogo</title>
-        <meta name="description" content="Descubre nuestra exclusiva colección de fragancias para dama y caballero" />
-        <meta name="theme-color" content="#ffffff" />
-      </Helmet>
-
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path="/" element={<CatalogPage />} />
-        </Routes>
-      </Suspense>
-
-      <Toast />
+      <SEOHead 
+        title="Catálogo de Fragancias"
+        description="Descubre nuestra exclusiva colección de fragancias para dama y caballero"
+        url="https://perfumeselisa.com"
+      />
+      <Routes>
+        <Route path="/" element={<CatalogPage />} />
+      </Routes>
+      <Toaster position="bottom-center" />
     </Router>
   );
 }
