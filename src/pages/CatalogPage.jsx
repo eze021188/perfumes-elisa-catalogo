@@ -8,19 +8,89 @@ import ProductModal from '../components/ui/ProductModal';
 import CartModal from '../components/ui/CartModal';
 
 function CatalogPage() {
-  const [categorias, setCategorias] = useState(['all', 'women', 'men', 'unisex']);
-  const [selectedCat, setSelectedCat] = useState('all');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categorias] = useState(['INICIO', 'FRAGANCIA FEMENINA', 'FRAGANCIA MASCULINA', 'UNISEX']);
+  const [selectedCat, setSelectedCat] = useState('INICIO');
   const [searchTerm, setSearchTerm] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [filtered, setFiltered] = useState([]);
 
+  // Fetch products from Supabase
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('productos')
+          .select('*');
+
+        if (error) throw error;
+
+        const processedProducts = data.map(product => ({
+          ...product,
+          imagen_url: product.imagen_url || 'https://placehold.co/400x400/f8f7f4/433d36?text=No+Imagen',
+          precio_normal: parseFloat(product.precio_normal) || 0,
+          promocion: product.promocion ? parseFloat(product.promocion) : null,
+          stock: parseInt(product.stock) || 0
+        }));
+
+        setProducts(processedProducts);
+        setFiltered(processedProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error('Error al cargar los productos');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
+  // Filter products based on category and search term
+  useEffect(() => {
+    let result = products;
+    
+    if (selectedCat !== 'INICIO') {
+      result = result.filter(p => p.categoria === selectedCat);
+    }
+    
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      result = result.filter(p => 
+        p.nombre.toLowerCase().includes(search) ||
+        p.descripcion?.toLowerCase().includes(search) ||
+        p.categoria.toLowerCase().includes(search)
+      );
+    }
+    
+    setFiltered(result);
+  }, [selectedCat, searchTerm, products]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const addToCart = (product) => {
+    if (product.stock <= 0) {
+      toast.error('Producto agotado');
+      return;
+    }
+
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       if (existingItem) {
+        if (existingItem.qty >= product.stock) {
+          toast.error('Stock insuficiente');
+          return prevItems;
+        }
         return prevItems.map(item =>
           item.id === product.id
             ? { ...item, qty: item.qty + 1 }
@@ -33,8 +103,21 @@ function CatalogPage() {
   };
 
   const formatCurrency = (amount) => {
-    return '$' + amount.toFixed(2);
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-luxury-900"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -96,6 +179,9 @@ function CatalogPage() {
                 : item
             ).filter(item => item.qty > 0)
           );
+        }}
+        onRemove={(productId) => {
+          setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
         }}
         formatCurrency={formatCurrency}
       />
