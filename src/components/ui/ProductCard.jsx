@@ -69,19 +69,21 @@ export default function ProductCard({
           {nombre}
         </h3>
 
-        {/* Precio y stock */}
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex flex-col">
-            {promocion !== null && promocion < precio_normal && (
-              <span className="text-luxury-500 line-through text-xs">
-                {formatCurrency(precio_normal)}
-              </span>
-            )}
-            <span className="text-luxury-900 font-semibold">
-              {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
-            </span>
+        {/* Precios y stock */}
+        <div className="flex flex-col gap-1 mb-2">
+          {/* Siempre mostrar precio normal */}
+          <div className={`text-sm ${promocion !== null && promocion < precio_normal ? 'text-luxury-500 line-through' : 'text-luxury-900 font-semibold'}`}>
+            {formatCurrency(precio_normal)}
           </div>
           
+          {/* Mostrar precio promocional si existe */}
+          {promocion !== null && promocion < precio_normal && (
+            <div className="text-accent font-bold">
+              {formatCurrency(promocion)}
+            </div>
+          )}
+          
+          {/* Stock */}
           <div className="text-xs text-luxury-600">
             {stock} {t('inStock')}
           </div>
