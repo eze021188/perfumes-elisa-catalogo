@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Toast from './components/ui/Toast';
 import Loading from './components/ui/Loading';
+import WhatsAppButton from './components/ui/WhatsAppButton';
 
 const CatalogPage = React.lazy(() => import('./pages/CatalogPage'));
 const ComoAplicarPage = React.lazy(() => import('./pages/ComoAplicarPage'));
@@ -25,6 +26,7 @@ function App() {
         </Routes>
       </Suspense>
 
+      <WhatsAppButton />
       <Toast />
     </Router>
   );
