@@ -1,7 +1,8 @@
-@import '@fontsource/playfair-display/400.css';
-@import '@fontsource/playfair-display/500.css';
-@import '@fontsource/playfair-display/600.css';
-@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/cormorant/300.css';
+@import '@fontsource/cormorant/400.css';
+@import '@fontsource/cormorant/500.css';
+@import '@fontsource/cormorant/600.css';
+@import '@fontsource/cormorant/700.css';
 @import '@fontsource/montserrat/400.css';
 @import '@fontsource/montserrat/500.css';
 @import '@fontsource/montserrat/600.css';
@@ -25,18 +26,10 @@
   }
 }
 
-@layer components {
-  .btn-luxury {
-    @apply bg-luxury-900 text-white px-6 py-3 rounded-none
-           hover:bg-luxury-800 transition-colors duration-300
-           font-medium tracking-wide uppercase text-sm;
-  }
-
-  .input-luxury {
-    @apply bg-white border-luxury-200 rounded-none px-4 py-2
-           focus:ring-1 focus:ring-accent focus:border-accent
-           placeholder:text-luxury-300;
-  }
+.product-name {
+  @apply font-display text-lg tracking-wide leading-snug;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .luxury-card-shadow {
@@ -46,8 +39,4 @@
 
 .luxury-card-shadow:hover {
   box-shadow: 0 8px 30px -4px rgba(200, 169, 126, 0.3);
-}
-
-.text-shadow-luxury {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }

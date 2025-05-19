@@ -33,7 +33,6 @@ export default function ProductCard({
       className="group bg-white rounded-xl luxury-card-shadow aspect-[3/4] flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Imagen del producto - 60% del espacio */}
       <div className="relative w-full h-[60%] bg-luxury-100 overflow-hidden">
         <img
           src={imagen_url}
@@ -45,7 +44,6 @@ export default function ProductCard({
           }}
         />
         
-        {/* Etiqueta de descuento */}
         {discount && (
           <div className="absolute top-4 left-4">
             <div className="bg-accent/90 backdrop-blur-sm text-white px-3 py-1 text-xs font-medium rounded-full">
@@ -54,7 +52,6 @@ export default function ProductCard({
           </div>
         )}
 
-        {/* Categoría */}
         <div className="absolute top-4 right-4">
           <div className="bg-white/90 backdrop-blur-sm text-luxury-800 px-3 py-1 text-xs font-medium rounded-full">
             {categoria}
@@ -62,14 +59,11 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Información del producto - 40% del espacio */}
-      <div className="p-4 flex flex-col h-[40%] justify-between bg-luxury-200">
-        {/* Nombre del producto - Ahora usando font-display */}
-        <h3 className="font-display text-base leading-tight line-clamp-2 mb-2 text-luxury-900">
+      <div className="p-4 flex flex-col h-[40%] justify-between bg-luxury-50">
+        <h3 className="product-name mb-2 text-luxury-900 line-clamp-2">
           {nombre}
         </h3>
 
-        {/* Precio y stock */}
         <div className="flex justify-between items-center mb-2">
           <div className="flex flex-col">
             {promocion !== null && promocion < precio_normal && (
@@ -77,26 +71,25 @@ export default function ProductCard({
                 {formatCurrency(precio_normal)}
               </span>
             )}
-            <span className="text-luxury-900 font-display text-lg">
+            <span className="font-display text-lg text-luxury-900 tracking-wide">
               {formatCurrency(promocion !== null && promocion < precio_normal ? promocion : precio_normal)}
             </span>
           </div>
           
-          <div className="text-xs text-luxury-600">
+          <div className="text-xs text-luxury-600 font-medium">
             {stock} {t('inStock')}
           </div>
         </div>
 
-        {/* Botón de acción */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             onAddToCart(product);
           }}
           disabled={stock <= 0}
-          className="w-full bg-accent/90 text-white py-1.5 text-xs font-medium rounded-lg
+          className="w-full bg-accent/90 text-white py-1.5 text-xs font-medium tracking-wider
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   hover:bg-accent transition-colors"
+                   hover:bg-accent transition-colors uppercase"
         >
           {stock > 0 ? t('addToCart') : t('notifyMe')}
         </button>

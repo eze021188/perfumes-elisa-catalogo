@@ -8,7 +8,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Montserrat', 'system-ui', 'sans-serif'],
-        display: ['Playfair Display', 'Georgia', 'serif'],
+        display: ['Cormorant', 'Georgia', 'serif'],
       },
       colors: {
         luxury: {
@@ -30,17 +30,7 @@ export default {
           dark: '#725c44',
         },
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'luxury-pattern': "url('/patterns/luxury-pattern.svg')",
-      },
-      boxShadow: {
-        'luxury': '0 4px 20px -2px rgba(67, 61, 54, 0.1)',
-        'luxury-hover': '0 8px 30px -4px rgba(67, 61, 54, 0.2)',
-      },
     },
   },
-  plugins: [
-    require('@tailwindcss/line-clamp'),
-  ],
+  plugins: [],
 }
