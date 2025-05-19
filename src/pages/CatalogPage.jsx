@@ -6,6 +6,7 @@ import Header from '../components/ui/Header';
 import ProductCard from '../components/ui/ProductCard';
 import ProductModal from '../components/ui/ProductModal';
 import CartModal from '../components/ui/CartModal';
+import Footer from '../components/ui/Footer';
 
 function CatalogPage() {
   const [products, setProducts] = useState([]);
@@ -23,7 +24,6 @@ function CatalogPage() {
   const [brands, setBrands] = useState([]);
   const [showOutOfStock, setShowOutOfStock] = useState(false);
 
-  // Fetch products from Supabase
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -42,7 +42,6 @@ function CatalogPage() {
           stock: parseInt(product.stock) || 0
         }));
 
-        // Extraer marcas únicas
         const uniqueBrands = [...new Set(processedProducts.map(p => p.marca).filter(Boolean))];
         setBrands(uniqueBrands.sort());
 
@@ -59,21 +58,17 @@ function CatalogPage() {
     fetchProducts();
   }, []);
 
-  // Filter products based on all criteria
   useEffect(() => {
     let result = products;
     
-    // Filtro por stock
     if (!showOutOfStock) {
       result = result.filter(p => p.stock > 0);
     }
     
-    // Filtro por categoría
     if (selectedCat !== 'INICIO') {
       result = result.filter(p => p.categoria === selectedCat);
     }
     
-    // Filtro por término de búsqueda
     if (searchTerm) {
       const search = searchTerm.toLowerCase();
       result = result.filter(p => 
@@ -83,13 +78,13 @@ function CatalogPage() {
       );
     }
 
-    // Filtro por rango de precios
-    result = result.filter(p => {
-      const precio = p.promocion && p.promocion < p.precio_normal ? p.promocion : p.precio_normal;
-      return precio >= priceRange.min && precio <= priceRange.max;
-    });
+    if (priceRange) {
+      result = result.filter(p => {
+        const precio = p.promocion && p.promocion < p.precio_normal ? p.promocion : p.precio_normal;
+        return precio >= priceRange.min && precio <= priceRange.max;
+      });
+    }
 
-    // Filtro por marca
     if (selectedBrand) {
       result = result.filter(p => p.marca === selectedBrand);
     }
@@ -97,7 +92,6 @@ function CatalogPage() {
     setFiltered(result);
   }, [selectedCat, searchTerm, priceRange, selectedBrand, products, showOutOfStock]);
 
-  // Handle window resize
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -188,6 +182,8 @@ function CatalogPage() {
           )}
         </AnimatePresence>
       </main>
+
+      <Footer />
 
       {selectedProduct && (
         <ProductModal
