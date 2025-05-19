@@ -33,8 +33,8 @@ export default function ProductCard({
       className="group bg-white rounded-xl luxury-card-shadow aspect-[3/4] flex flex-col cursor-pointer overflow-hidden"
       onClick={() => onProductClick(product)}
     >
-      {/* Imagen del producto - 55% del espacio */}
-      <div className="relative w-full h-[55%] bg-luxury-100 overflow-hidden">
+      {/* Imagen del producto - 50% del espacio */}
+      <div className="relative w-full h-[50%] bg-luxury-100 overflow-hidden">
         <img
           src={imagen_url}
           alt={nombre}
@@ -45,35 +45,34 @@ export default function ProductCard({
           }}
         />
         
-        {/* Etiqueta de descuento */}
-        {discount && (
-          <div className="absolute top-4 left-4">
-            <div className="bg-red-600 text-white px-3 py-1 text-xs font-medium rounded-full">
-              -{discount}%
-            </div>
-          </div>
-        )}
-
         {/* Categoría */}
         <div className="absolute top-4 right-4">
           <div className="bg-white/90 backdrop-blur-sm text-luxury-800 px-3 py-1 text-xs font-medium rounded-full">
             {categoria}
           </div>
         </div>
+
+        {/* Etiqueta de descuento - Ahora en la parte inferior izquierda */}
+        {discount && (
+          <div className="absolute bottom-4 left-4">
+            <div className="bg-red-600 text-white px-3 py-1 text-xs font-medium rounded-full">
+              -{discount}%
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Información del producto - 45% del espacio */}
-      <div className="p-4 flex flex-col h-[45%] justify-between bg-luxury-200">
-        {/* Nombre del producto */}
-        <h3 className="font-product text-sm leading-tight line-clamp-2 mb-2 font-bold text-luxury-900">
+      {/* Información del producto - 50% del espacio */}
+      <div className="p-4 flex flex-col h-[50%] justify-between bg-luxury-200">
+        {/* Nombre del producto - Primera y segunda línea */}
+        <h3 className="font-product text-sm leading-tight line-clamp-2 mb-4 font-bold text-luxury-900">
           {nombre}
         </h3>
 
-        {/* Precios y stock */}
-        <div className="flex flex-col gap-1 mb-2">
-          {/* Precios en una sola línea */}
+        {/* Precios y stock en la misma línea */}
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            {/* Precio promocional (si existe y es menor) */}
+            {/* Precio promocional (si existe) */}
             {promocion !== null && promocion < precio_normal && (
               <span className="text-base font-bold text-luxury-900">
                 {formatCurrency(promocion)}
@@ -88,7 +87,7 @@ export default function ProductCard({
           
           {/* Stock */}
           <div className="text-xs text-luxury-600">
-            {stock} {t('inStock')}
+            Stock: {stock}
           </div>
         </div>
 
