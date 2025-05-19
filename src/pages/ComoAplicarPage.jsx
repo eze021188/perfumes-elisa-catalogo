@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
+import Layout from '../components/layout/Layout';
 
 export default function ComoAplicarPage() {
   return (
-    <>
+    <Layout>
       <SEOHead 
         title="Cómo aplicar una fragancia"
         description="Aprende a aplicar correctamente tu fragancia para maximizar su duración y efecto"
@@ -42,6 +43,6 @@ export default function ComoAplicarPage() {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
