@@ -28,11 +28,19 @@ export default defineConfig({
       }
     })
   ],
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
-  },
   build: {
-    sourcemap: true
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom']
+        }
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom']
   },
   test: {
     globals: true,
