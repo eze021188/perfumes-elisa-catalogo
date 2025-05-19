@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
+import Layout from '../components/layout/Layout';
 
 export default function PreguntasFraganciasPage() {
   return (
-    <>
+    <Layout>
       <SEOHead 
         title="Preguntas sobre perfumes"
         description="Respuestas a las preguntas más frecuentes sobre fragancias y perfumes"
@@ -124,6 +125,6 @@ export default function PreguntasFraganciasPage() {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
