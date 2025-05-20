@@ -78,7 +78,7 @@ export default function Footer() {
                 <Facebook className="w-6 h-6" />
               </a>
               <a
-                href="https://www.instagram.com/perfumes.elisa"
+                href="https://www.instagram.com/perfumeselisa"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-luxury-200 hover:text-white transition-colors"
