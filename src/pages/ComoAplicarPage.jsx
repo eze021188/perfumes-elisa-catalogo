@@ -23,7 +23,7 @@ export default function ComoAplicarPage() {
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-display text-luxury-800 mb-4">Consejo 1</h2>
-                <p>Como la piel húmeda fija mejor el aroma, aplica la fragancia justo después de ducharte o bañarte y antes de vestirte.</p>
+                <p>Como la piel húmeda fija mejor el aroma, aplica la fragancia justo después de ducharte o bañarte y antes de vestirte o después de colocarte crema corporal neutra o de un aroma suave.</p>
               </div>
 
               <div>
