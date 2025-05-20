@@ -17,7 +17,7 @@ export default function PreguntasFraganciasPage() {
             ← Volver al catálogo
           </Link>
           
-          <h1 className="text-4xl font-display text-luxury-900 mb-12">Preguntas sobre perfumes</h1>
+          <h1 className="text-4xl font-display text-luxury-900 mb-12">Preguntas sobre los perfumes</h1>
           
           <div className="space-y-12">
             <section>
